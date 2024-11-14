@@ -1,7 +1,7 @@
 // jshint esversion:6
 import express from 'express';
 import xss from 'xss';
-import { adminAuth, isConnected, getUser } from '../API/connectivity.js';
+import { adminAuth, isConnected, getUser, isAdmin } from '../API/connectivity.js';
 import cookieParser from 'cookie-parser';
 
 
@@ -19,14 +19,21 @@ export default function (io) {
     var rooms = [{ players: [], id: 123456789,}];
     var listeCodes = [];
 
-    router.post('/',adminAuth, (req, res) => {
+    router.post('/', (req, res) => {
         const infos = req.body;
         let roomID = 0;
         if (infos.action == "host") {
-            roomID = Math.floor(Math.random() * 899999) + 100000;
-            listeCodes.push(parseInt(roomID));
-            console.log("[Hosting] room " + roomID);
-            res.redirect('/apps/buzzer/' + roomID);
+            isAdmin(req, res, (isAdminRes) => {
+                if (!isAdminRes) {
+                    res.status(403).render('home', { titre: "Accès refusé", root: "../../", title: "Erreur",connected:isAdminRes });
+                }
+                else {
+                    roomID = Math.floor(Math.random() * 899999) + 100000;
+                    listeCodes.push(parseInt(roomID));
+                    console.log("[Hosting] room " + roomID);
+                    res.redirect('/apps/buzzer/' + roomID);
+                }
+            })
         }
         else if (infos.action == 'join') {
             res.redirect('/apps/buzzer/' + infos.code);
@@ -75,7 +82,7 @@ export default function (io) {
                 player.locked = true;
                 player.free = false;
                 p = player;
-                r = { players: [p], id: player.roomId,buzzes:[], options: { mode: "default-mode", point: false } };
+                r = { players: [p], id: player.roomId,buzzes:[], options: { mode: "default-mode", point: false,npg: false, nbpoint: 1 } };
                 rooms.push(r);
                 socket.join(p.roomId);
 
@@ -209,7 +216,7 @@ export default function (io) {
                 r.buzzes.sort((a,b)=>{
                     return a.time-b.time;
                 });
-                io.to(r.id).emit("player buzz", r.buzzes, r.options.point);
+                io.to(r.id).emit("player buzz", r.buzzes, r.options.point,r.options.npg);
             }
             else if (r.options.mode === "multi-mode" && p.free && !p.host){
                 console.log(`[Buzz ${r.id}] ${p.username} confirmed multi`);
@@ -221,7 +228,7 @@ export default function (io) {
                 r.buzzes.sort((a,b)=>{
                     return a.time-b.time;
                 });
-                io.to(r.id).emit("player buzz", r.buzzes, r.options.point);
+                io.to(r.id).emit("player buzz", r.buzzes, r.options.point,r.options.npg);
             }
             else if (p.host){
                 p.buzzed = true;
@@ -243,8 +250,26 @@ export default function (io) {
             }
         });
 
+        socket.on("change9PGMode",(bool)=>{
+            if (bool != r.options.npg){
+                console.log(`changing 9PG mode ${bool}`);
+                r.options.npg=bool;
+                r.options.point=bool;
+                r.options.nbpoint=1;
+                if (bool){
+                    resetPoints(r);
+                    io.to(p.roomId).emit("show scores", r);
+                }
+                else{
+                    io.to(p.roomId).emit("unshow scores", r);
+                    io.to(p.roomId).emit("unqualifie", p);
+                }
+            }
+        });
+
         socket.on('resetPoints',()=>{
             resetPoints(r);
+            r.options.nbpoint=1;
             io.to(p.roomId).emit("show scores",r);
         });
 
@@ -254,6 +279,35 @@ export default function (io) {
             var player = r.players.find((player) => { return player.username === username; });
             player.points += parseInt(points);
             io.to(p.roomId).emit("update score",player);
+            if (r.options.npg && player.points <= 9) {
+                io.to(p.roomId).emit("unqualifie",player);
+            }
+        });
+
+        socket.on('change points 9PG', (username)=>{
+            if (r.options.npg && p.host){
+                console.log(username);
+                var player = r.players.find((player) => { return player.username === username; });
+                const playersWithNineOrMorePoints = r.players.filter(player => player.points >= 9).length;
+                console.log(`Number of players with 9 or more points: ${playersWithNineOrMorePoints}`);
+                var points;
+                if (playersWithNineOrMorePoints >= 2) {
+                    points=3;
+                }
+                else if (playersWithNineOrMorePoints === 1) {
+                    points=2;
+                }
+                else {
+                    points=r.options.nbpoint;
+                }
+                console.log(points);
+                player.points += parseInt(points);
+                r.options.nbpoint=(r.options.nbpoint % 3) +1;
+                io.to(p.roomId).emit("update score",player);
+                if (player.points >= 9) {
+                    io.to(p.roomId).emit("qualifie",player);
+                }
+            }
         });
 
         socket.on("disconnect", () => {

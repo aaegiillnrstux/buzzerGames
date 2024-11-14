@@ -11,8 +11,9 @@ const player = {
 
 const socket = io();
 
-var buzz = new Audio('/components/buzzsound.mp3');
-buzz.preload = 'auto';
+lowLag.init();
+lowLag.load('/components/buzzsound.mp3');
+lowLag.load('/components/Ding.mp3');
 
 let start = false;
 
@@ -36,6 +37,11 @@ $('#reset').on('click',(e)=>{
 
 $('#btn-points').on('change',(e)=>{
     socket.emit("changePointsMode",$('#btn-points').is(':checked'));
+});
+
+$('#btn-9pg').on('change',(e)=>{
+    console.log($('#btn-9pg').is(':checked'));
+    socket.emit("change9PGMode",$('#btn-9pg').is(':checked'));
 });
 
 $(function(){
@@ -144,23 +150,33 @@ socket.on("buzzed",()=>{
     buzzed();
 });
 
-socket.on("player buzz",(buzzes,bool)=>{
+socket.on("player buzz",(buzzes,bool,npg)=>{
     console.log(JSON.stringify(buzzes));
     $('.check-buzz').off('click');
     $('#buzzing-list').empty();
     buzzes.forEach((buzz)=>{
         var htmlcode = `<li class="list-group-item"  >${buzz.player}  `;
-        if (bool){
+        if (bool & !npg){
             htmlcode += `<i class="fa-solid fa-circle-check check-buzz" style="color:green" data-username="${buzz.player}" id="${buzz.player}-check" data-bs-toggle="modal" data-bs-target="#modalGivePoints"></i>`;
+        }
+        else if (npg){
+            htmlcode += `<i class="fa-solid fa-circle-check check-buzz" style="color:green" data-username="${buzz.player}" id="${buzz.player}-check"></i>`;
         }
         htmlcode += '</li>';
         $('#buzzing-list').append(htmlcode);
         $(`#${buzz.player}-check`).on('click',(e)=>{
-            $('#pseudo-modal').text(`${buzz.player}`);
-            $('#btn-validate').attr("data-username", `${buzz.player}`);
-            $('#btn-validate').on('click',(e)=>{
-                validerPoints(e.target);
-            });
+            if (npg){
+                socket.emit("change points 9PG",e.target.dataset.username);
+                liberer("all");
+            }
+            else{
+                $('#pseudo-modal').text(`${buzz.player}`);
+                $('#btn-validate').attr("data-username", `${buzz.player}`);
+                $('#btn-validate').on('click',(e)=>{
+                    validerPoints(e.target);
+                });
+            }
+
         });
     });
     
@@ -194,6 +210,16 @@ socket.on("update score",(p)=>{
 
     score.text(p.points);
 });
+
+socket.on("qualifie",(p)=>{
+    $(`#${p.username}`).css('background-color', 'green');
+    lowLag.play('/components/Ding.mp3');
+})
+
+socket.on("unqualifie",(p)=>{
+    $(`#${p.username}`).css('background-color', 'white');
+});
+
 
 socket.on("clear buzz",()=>{
     console.log("clear");
@@ -229,8 +255,7 @@ function buzzed(){
 }
 
 function soundPlay(){
-    
-    buzz.play();
+    lowLag.play('/components/buzzsound.mp3');
 }
 
 function afficheScore(bool,p){

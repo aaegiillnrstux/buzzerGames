@@ -1,7 +1,7 @@
 // jshint esversion:6
 import express from 'express';
 import xss from 'xss';
-import { adminAuth, isConnected, getUser } from '../API/connectivity.js';
+import { adminAuth, isConnected, isAdmin, getUser } from '../API/connectivity.js';
 import cookieParser from 'cookie-parser';
 
 
@@ -19,14 +19,20 @@ export default function (io) {
     var rooms = [{ players: [], id: 123456789, spectateurs:[], state: { start: false,main:null},options:{roundTime:20}}];
     var listeCodes = [];
 
-    router.post('/', adminAuth, (req, res) => {
+    router.post('/',  (req, res) => {
         const infos = req.body;
         let roomID = 0;
-        if (infos.action == "host") {    
-            roomID = Math.floor(Math.random() * 899999) + 100000;
-            listeCodes.push(parseInt(roomID));
-            console.log("[Hosting] room " + roomID);
-            res.redirect('/apps/faf/' + roomID);
+        if (infos.action == "host") {  
+            isAdmin(req, res, (isAdminRes) => {
+                if (isAdminRes) {
+                    roomID = Math.floor(Math.random() * 899999) + 100000;
+                    listeCodes.push(parseInt(roomID));
+                    console.log("[Hosting] room " + roomID);
+                    res.redirect('/apps/faf/' + roomID);
+                }
+                else {
+                    res.status(403).render('home', { titre: "Accès refusé", root: "../../", title: "Erreur",connected:isAdminRes });
+                }});  
         }
         else if (infos.action == 'join') {
             res.redirect('/apps/faf/' + infos.code);

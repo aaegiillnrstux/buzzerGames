@@ -13,7 +13,9 @@ var player = {
 
 const socket = io();
 
-var buzz = new Audio('/components/buzzsound.mp3');
+lowLag.init();
+lowLag.load('/components/buzzsound.mp3');
+lowLag.load('/components/Ding.mp3');
 
 $("#form-pseudo").on('submit', function (e){
     e.preventDefault();
@@ -38,6 +40,7 @@ socket.on("player init",(room,p)=>{
         else{
             $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} <div class="score" style="display: none;"><button type="button" id="${player.username}-score" class="btn btn-success score-point edit">${p.points}</button></div></li>`);
         }
+        afficheScore(true,player);
     });
     if (p.free&&!p.locked&&!p.buzzed){
         $("#buzzer-state").text("BUZZ");
@@ -58,6 +61,7 @@ socket.on("remove player",(player)=>{
     console.log(`Bye bye ${player.username}`);
     $(`#${player.username}`).remove();
 });
+
 socket.on("new player",(player,bool)=>{
     $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} <div class="score" style="display: none;"><button type="button" id="${player.username}-score" class="btn btn-success score-point edit">${player.points}</button></div></li>`);
     afficheScore(bool,player);
@@ -85,6 +89,33 @@ socket.on("update score",(p)=>{
     var score = $(`#${p.username}-score`);
     score.text(p.points);
 });
+
+socket.on("qualifie",(p)=>{
+    $("#buzzer-state").text("Qualifié");
+    $("#buzzer-circle").attr('fill',"blue");
+    $("#buzzer").off('click');
+    $(`#${p.username}`).css('background-color', 'green');
+    lowLag.play('/components/Ding.mp3');
+})
+
+socket.on("unqualifie",(r)=>{
+    if (p.locked){
+        $("#buzzer-state").text("Bloqué");
+        $("#buzzer-circle").attr('fill',"yellow");
+        $("#buzzer").off('click');
+    }
+    else if (p.free){
+        $("#buzzer-state").text("BUZZ");
+        $("#buzzer-circle").attr('fill',"green");
+        $("#buzzer").on('click',buzzerAction);
+    }
+    else if (p.buzzed){
+        $("#buzzer-state").text("Buzzed");
+        $("#buzzer-circle").attr('fill',"red");
+    }
+    $(`#${r.username}`).css('background-color', 'white');
+});
+
 
 socket.on("disconnect",()=>{
     alert("L'hôte s'est déconnecté");
@@ -147,7 +178,7 @@ function buzzed(){
 
 function buzzerAction(){
     
-    buzz.play();
+    lowLag.play('/components/buzzsound.mp3');
     buzzed();
 }
 
