@@ -273,6 +273,11 @@ export default function (io) {
             io.to(p.roomId).emit("show scores",r);
         });
 
+        socket.on('passer',()=>{
+            r.options.nbpoint=(r.options.nbpoint % 3) +1;
+            io.to(p.roomId).emit("passer",r.options.nbpoint);
+        });
+
         socket.on('change points', (username,points)=>{
             console.log(username);
             console.log(points);

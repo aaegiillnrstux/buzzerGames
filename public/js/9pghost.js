@@ -30,9 +30,15 @@ $("#liberer").on('click',(e)=>{
 $("#bloquer").on('click',(e)=>{
     block("all");
 });
+
 $('#reset').on('click',(e)=>{
     console.log("reset");
     socket.emit("resetPoints");
+});
+
+$('#passer').on('click',(e)=>{
+    console.log("passer");
+    socket.emit("passer");
 });
 
 $('#btn-points').on('change',(e)=>{
@@ -150,6 +156,14 @@ socket.on("buzzed",()=>{
     buzzed();
 });
 
+socket.on("passer",(nbpoint)=>{
+    liberer("all");
+    $("#success-alert").html(`<strong>Passage à ${nbpoint} </strong>`);
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+});
+
 socket.on("player buzz",(buzzes,bool,npg)=>{
     console.log(JSON.stringify(buzzes));
     $('.check-buzz').off('click');
@@ -184,6 +198,9 @@ socket.on("player buzz",(buzzes,bool,npg)=>{
 
 socket.on("show scores",(r)=>{
     $('#reset').show("slow");
+    if (r.options.npg){
+        $("#passer").show("slow");
+    }
     r.players.forEach((p)=>{
         afficheScore(true,p);
     });
@@ -196,6 +213,7 @@ socket.on("show scores",(r)=>{
 
 socket.on("unshow scores",(r)=>{
     $('#reset').hide();
+    $("#passer").hide();
     r.players.forEach((p)=>{
         afficheScore(false,p);
     });
