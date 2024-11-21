@@ -200,7 +200,7 @@ export default function (io) {
                 console.log(`[FAF ${r.id}] ${player} buzzed `);
                 p.state="blocked";
                 r.state.buzzed=true;
-                fafNamespace.to(p.roomId).emit("FAF buzzed",r);
+                fafNamespace.to(p.roomId).emit("FAF buzzed",r,player);
             }
         })
 

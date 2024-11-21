@@ -93,6 +93,7 @@ socket.on("update score",(p)=>{
 socket.on("qualifie",(p)=>{
     $("#buzzer-state").text("Qualifié");
     $("#buzzer-circle").attr('fill',"blue");
+    $(document).off('keydown');
     $("#buzzer").off('click');
     $(`#${p.username}`).css('background-color', 'green');
     lowLag.play('/components/Ding.mp3');
@@ -113,6 +114,12 @@ socket.on("unqualifie",(r)=>{
         $("#buzzer-state").text("Buzzed");
         $("#buzzer-circle").attr('fill',"red");
     }
+    $(document).keydown(function(e){
+        if (e.code === "Space"){
+
+            buzzerAction();
+        }
+    });
     $(`#${r.username}`).css('background-color', 'white');
 });
 

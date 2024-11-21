@@ -145,14 +145,24 @@ socket.on("FAF free", (r)=>{
     liberer();
 });
 
-socket.on("FAF buzzed", (room)=>{
+socket.on("FAF buzzed", (room,player)=>{
     console.log("buzzed")
+    clearInterval(countdownInterval);
     currentRoom=room;
     lowLag.play('/components/buzzsound.mp3');
-    clearInterval(countdownInterval);
-    $("#buzzer").off('click');
-    $("#buzzer-state").text("Buzzed");
-    $("#buzzer-circle").attr('fill',"red");
+    if (myplayer.username==player){
+        
+        $("#buzzer").off('click');
+        $("#buzzer-state").text("Buzzed");
+        $("#buzzer-circle").attr('fill',"red");
+    }
+    else {
+        $("#buzzer").off('click');
+        $("#buzzer-state").text("Bloqué");
+        $("#buzzer-circle").attr('fill',"yellow");
+    }
+    
+    
 
 })
 

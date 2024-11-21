@@ -636,7 +636,7 @@ function block(){
 }
 
 function updatePoints(){
-    nbPoint=parseInt(((Date.now()-dateEstimation)/1000)/rateManche2);
+    nbPoint=parseInt(((Date.now()-dateEstimation)/1000)/rateManche2)+1;
     if (nbPoint!=currentPoints && nbPoint<=pointMaxManche2){
         currentPoints=nbPoint;
         $("#success-alert").html(`<strong>Nous passons à ${currentPoints} </strong>`);
