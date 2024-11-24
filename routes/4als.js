@@ -112,13 +112,20 @@ export default function (io) {
         });
 
         socket.on("4ALS current player", (player) => {
-            if (p && p.host) {
-                console.log(`[4ALS ${r.id}]current player : `+player);
-                r.state.currentPlayer=player;
-                r.state.score=0;
-                r.state.maxScore=0;
-                io.to(p.roomId).emit("4ALS current player", r);
+            try{
+                if (p && p.host) {
+                    console.log(`[4ALS ${r.id}]current player : `+player);
+                    r.state.currentPlayer=player;
+                    r.state.score=0;
+                    r.state.maxScore=0;
+                    io.to(p.roomId).emit("4ALS current player", r);
+                }
             }
+            catch(e){
+                console.error("Il y a eu un pb dans 4ALS current player : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur pour changer de joueur")
+            }
+
         });
 
         socket.on("4ALS start", () => {
@@ -129,21 +136,28 @@ export default function (io) {
         });
 
         socket.on("4ALS end", () => {
-            if (p && p.host) {
-                try{
-                    r.state.start = false;
-                    var player = r.players.find((player) => { return player.username === r.state.currentPlayer; });
-                    player.points=r.state.maxScore;
-                    r.state.score=0;
-                    io.to(p.roomId).emit("4ALS end", r,player);
+            try{    
+                if (p && p.host) {
+                    try{
+                        r.state.start = false;
+                        var player = r.players.find((player) => { return player.username === r.state.currentPlayer; });
+                        player.points=r.state.maxScore;
+                        r.state.score=0;
+                        io.to(p.roomId).emit("4ALS end", r,player);
+                    }
+                    catch(e){
+                        console.error("Il y a eu un pb dans 4ALS end : "+e);
+                        io.in(p.roomID).emit("4ALS error","Il y a eu un problème lors du 4 à la suite")
+                        io.in(p.roomID).disconnectSockets();
+                    }
+                    
                 }
-                catch(e){
-                    console.error("Il y a eu un pb dans 4ALS end : "+e);
-                    io.in(p.roomID).emit("4ALS error","Il y a eu un problème lors du 4 à la suite")
-                    io.in(p.roomID).disconnectSockets();
-                }
-                
             }
+            catch(e){
+                console.error("Il y a eu un pb dans 4ALS end : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur à la fin du 4ALS")
+            }
+            
         });
 
 
@@ -190,11 +204,17 @@ export default function (io) {
 
         socket.on('4ALS change points', (username,points)=>{
             // check if points integer
-            if (p && p.host && points.match(/^-?[0-9]+$/)!=null) {
-                var player = r.players.find((player) => { return player.username === username; });
-                player.points += parseInt(points);
-                io.to(p.roomId).emit("4ALS update score",player,r);
+            try{
+                if (p && p.host && points.match(/^-?[0-9]+$/)!=null) {
+                    var player = r.players.find((player) => { return player.username === username; });
+                    player.points += parseInt(points);
+                    io.to(p.roomId).emit("4ALS update score",player,r);
+                }
+            }catch(e){
+                console.error("Il y a eu un pb dans 4ALS change points : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur pour changer les points")
             }
+
         });
 
 
@@ -222,23 +242,13 @@ export default function (io) {
             }
             
           }, 10000);
-        
-        
-
-
     });
-
-    
+  
     function resetPoints(r){
         r.players.forEach((p)=>{
             p.points=0;
         });
     }
-
-
-
-
-
     return router;
 
 

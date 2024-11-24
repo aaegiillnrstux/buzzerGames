@@ -253,6 +253,10 @@ socket.on("error",(err)=>{
     alert(err);
     document.location.href="/";
 });
+socket.on("alert",(err)=>{
+    alert(err);
+});
+
 
 function liberer(str="only"){
     socket.emit("libere",str);

@@ -318,7 +318,7 @@ socket.on("Conquiz unblock finale",(r)=>{
 
 socket.on("Conquiz finale answer",(number)=>{
     $(`#finale-${number}`).addClass("good-block");
-    lowLag.play('/components/Ding.mp3');
+    // lowLag.play('/components/Ding.mp3');
     $(`#finale-${number}`).text(currentRoom.state.finaleQuestions[number-1].answer);
 })
 

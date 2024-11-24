@@ -222,6 +222,10 @@ socket.on("4ALSerror",(err)=>{
     document.location.href="/";
 });
 
+socket.on("4ALS alert",(err)=>{
+    alert(err);
+});
+
 function updateCountdown(){
     const time = parseInt($('#countdown').text());
     if (time<=0){

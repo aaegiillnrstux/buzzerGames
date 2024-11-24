@@ -93,31 +93,37 @@ export default function (io) {
         });
 
         socket.on('playerData', (player) => {
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                io.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques");
-                
-            }
-            else {
-                console.log(`[Joining] ${player.username} join la room ` + player.roomId);
-                player.username = xss(player.username);
-                player.host = false;
-                player.roomId = parseInt(player.roomId);
-                player.points=0;
-                p = player;
-                r = rooms.find((room) => { return p.roomId === room.id; });
-                if (!r) {
-                    socket.disconnect();
+            try{
+                if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+                    io.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+                    
                 }
                 else {
-                    p.free = r.players[0].free;
-                    p.locked = r.players[0].locked;
-                    p.buzzed = r.players[0].buzzed;
-                    r.players.push(player);
-                    io.to(p.roomId).emit("new player", p,r.options.point);
-                    socket.join(p.roomId);
-                    io.to(socket.id).emit("player init", r, p);
+                    console.log(`[Joining] ${player.username} join la room ` + player.roomId);
+                    player.username = xss(player.username);
+                    player.host = false;
+                    player.roomId = parseInt(player.roomId);
+                    player.points=0;
+                    p = player;
+                    r = rooms.find((room) => { return p.roomId === room.id; });
+                    if (!r) {
+                        socket.disconnect();
+                    }
+                    else {
+                        p.free = r.players[0].free;
+                        p.locked = r.players[0].locked;
+                        p.buzzed = r.players[0].buzzed;
+                        r.players.push(player);
+                        io.to(p.roomId).emit("new player", p,r.options.point);
+                        socket.join(p.roomId);
+                        io.to(socket.id).emit("player init", r, p);
+                    }
                 }
+            }catch (err){
+                console.log(err);
+                io.in(p.roomId).emit("alert", "Il y a un petit malin dans la salle");
             }
+            
         });
 
         socket.on("changeMode", (mode) => {
@@ -132,67 +138,85 @@ export default function (io) {
         });
 
         socket.on("libere", (str) => {
-            console.log(`[Free ${r.id}] ${p.username}`);
-            if ((p.buzzed || p.locked) && !p.free) {
-                console.log(`[Freeing ${r.id}] ${p.username}`);
-                p.buzzed = false;
-                p.locked = false;
-                p.free = true;
-                if (p.host && str==="all") {
-                    socket.to(r.id).emit("libere");
-                    console.log("clearing buzz");
-                    io.to(r.id).emit("clear buzz");
-                    r.buzzes=[];
+            try{
+                console.log(`[Free ${r.id}] ${p.username}`);
+                if ((p.buzzed || p.locked) && !p.free) {
+                    console.log(`[Freeing ${r.id}] ${p.username}`);
+                    p.buzzed = false;
+                    p.locked = false;
+                    p.free = true;
+                    if (p.host && str==="all") {
+                        socket.to(r.id).emit("libere");
+                        console.log("clearing buzz");
+                        io.to(r.id).emit("clear buzz");
+                        r.buzzes=[];
+                    }
                 }
+                else if (p.free  && !p.locked&&!p.buzzed){
+                    
+                }
+                else {
+                    io.in(p.roomId).emit("error", "Etat du buzzer non stable");
+                    io.in(p.roomId).disconnectSockets();
+                }
+            } catch (err){
+                console.log(err);
+                io.in(p.roomId).emit("alert", "Erreur de libération. Rééssayez");
             }
-            else if (p.free  && !p.locked&&!p.buzzed){
-                
-            }
-            else {
-                io.in(p.roomId).emit("error", "Etat du buzzer non stable");
-                io.in(p.roomId).disconnectSockets();
-            }
+            
 
 
         });
 
         socket.on("block", (str="only") => {
-            console.log(`[Block ${r.id}] ${p.username}`);
-            if ((p.buzzed || p.free) && !p.locked) {
-                console.log(`[Blocking ${r.id}] ${p.username}`);
-                p.buzzed = false;
-                p.locked = true;
-                p.free = false;
-                if (p.host && str==="all") {
-                    socket.to(r.id).emit("block");
-                    console.log("testing");
+            try{
+                console.log(`[Block ${r.id}] ${p.username}`);
+                if ((p.buzzed || p.free) && !p.locked) {
+                    console.log(`[Blocking ${r.id}] ${p.username}`);
+                    p.buzzed = false;
+                    p.locked = true;
+                    p.free = false;
+                    if (p.host && str==="all") {
+                        socket.to(r.id).emit("block");
+                        console.log("testing");
+                    }
                 }
+                else if ((p.locked || p.buzzed) && !p.free){
+                    
+                }
+                else {
+                    io.in(p.roomId).emit("error", "Etat du buzzer non stable");
+                    io.in(p.roomId).disconnectSockets();
+                }
+            }catch (err){
+                console.log(err);
+                io.in(p.roomId).emit("alert", "Erreur de blocage. Rééssayez");
             }
-            else if ((p.locked || p.buzzed) && !p.free){
-                
-            }
-            else {
-                io.in(p.roomId).emit("error", "Etat du buzzer non stable");
-                io.in(p.roomId).disconnectSockets();
-            }
+            
 
         });
 
         socket.on("soloblock", (socketId) => {
-            var player = r.players.find((player) => { return player.socketId === socketId; });
-            if (player) {
-                if (player.buzzed || player.free) {
-                    console.log(`[Block ${r.id}] ${player.username}`);
-                    io.to(socketId).emit("block");
+            try{
+                var player = r.players.find((player) => { return player.socketId === socketId; });
+                if (player) {
+                    if (player.buzzed || player.free) {
+                        console.log(`[Block ${r.id}] ${player.username}`);
+                        io.to(socketId).emit("block");
+                    }
+                    if (player.locked) {
+                        console.log(`[Free ${r.id}] ${player.username}`);
+                        io.to(socketId).emit("libere");
+                    }
                 }
-                if (player.locked) {
-                    console.log(`[Free ${r.id}] ${player.username}`);
-                    io.to(socketId).emit("libere");
-                }
+            }catch (err){
+                console.log(err);
+                io.in(p.roomId).emit("alert", "Erreur de blocage. Rééssayez");
             }
         });
 
         socket.on("kick", (socketId) => {
+            try{
             var bool = false;
             if (p.host) {
                 bool = true;
@@ -201,6 +225,10 @@ export default function (io) {
             if (bool) {
                 io.to(socket.id).emit("kick-success");
             }
+        }catch (err){
+            console.log(err);
+            io.in(p.roomId).emit("alert", "Erreur de kick. Rééssayez");
+        }
         });
 
         socket.on("buzz", () => {
@@ -279,6 +307,7 @@ export default function (io) {
         });
 
         socket.on('change points', (username,points)=>{
+            try {
             console.log(username);
             console.log(points);
             var player = r.players.find((player) => { return player.username === username; });
@@ -287,31 +316,40 @@ export default function (io) {
             if (r.options.npg && player.points <= 9) {
                 io.to(p.roomId).emit("unqualifie",player);
             }
+        } catch (err){
+            console.log(err);
+            io.in(p.roomId).emit("alert", "Erreur de modification des points. Rééssayez");
+        }
         });
 
         socket.on('change points 9PG', (username)=>{
-            if (r.options.npg && p.host){
-                console.log(username);
-                var player = r.players.find((player) => { return player.username === username; });
-                const playersWithNineOrMorePoints = r.players.filter(player => player.points >= 9).length;
-                console.log(`Number of players with 9 or more points: ${playersWithNineOrMorePoints}`);
-                var points;
-                if (playersWithNineOrMorePoints >= 2) {
-                    points=3;
-                }
-                else if (playersWithNineOrMorePoints === 1) {
-                    points=2;
-                }
-                else {
-                    points=r.options.nbpoint;
-                }
-                console.log(points);
-                player.points += parseInt(points);
-                r.options.nbpoint=(r.options.nbpoint % 3) +1;
-                io.to(p.roomId).emit("update score",player);
-                if (player.points >= 9) {
-                    io.to(p.roomId).emit("qualifie",player);
-                }
+            try{
+                if (r.options.npg && p.host){
+                    console.log(username);
+                    var player = r.players.find((player) => { return player.username === username; });
+                    const playersWithNineOrMorePoints = r.players.filter(player => player.points >= 9).length;
+                    console.log(`Number of players with 9 or more points: ${playersWithNineOrMorePoints}`);
+                    var points;
+                    if (playersWithNineOrMorePoints >= 2) {
+                        points=3;
+                    }
+                    else if (playersWithNineOrMorePoints === 1) {
+                        points=2;
+                    }
+                    else {
+                        points=r.options.nbpoint;
+                    }
+                    console.log(points);
+                    player.points += parseInt(points);
+                    r.options.nbpoint=(r.options.nbpoint % 3) +1;
+                    io.to(p.roomId).emit("update score",player);
+                    if (player.points >= 9) {
+                        io.to(p.roomId).emit("qualifie",player);
+                    }
+            }}
+            catch (err){
+                console.log(err);
+                io.in(p.roomId).emit("alert", "Erreur de modification des points. Rééssayez");
             }
         });
 
@@ -338,7 +376,6 @@ export default function (io) {
             p.ping=(Date.now()-start)/2;
         });
 
-
         setInterval(() => {
             const start = Date.now();
             if (p){
@@ -346,24 +383,11 @@ export default function (io) {
             }
             
           }, 10000);
-        
-        
-
-
     });
-
-    
     function resetPoints(r){
         r.players.forEach((p)=>{
             p.points=0;
         });
     }
-
-
-
-
-
     return router;
-
-
 }
