@@ -1,6 +1,6 @@
 // jshint esversion:6
 import express from 'express';
-import xss, { clearNonPrintableCharacter } from 'xss';
+import xss from 'xss';
 import { adminAuth, isConnected, isAdmin,getUser } from '../API/connectivity.js';
 import cookieParser from 'cookie-parser';
 
