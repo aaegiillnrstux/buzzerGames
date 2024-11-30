@@ -1,6 +1,6 @@
 // jshint esversion:6
 import express from 'express';
-import xss from 'xss';
+import xss, { clearNonPrintableCharacter } from 'xss';
 import { adminAuth, isConnected, isAdmin,getUser } from '../API/connectivity.js';
 import cookieParser from 'cookie-parser';
 
@@ -64,6 +64,7 @@ export default function (io) {
     io.on('connection', (socket) => {
         var p;
         var r;
+
         console.log(`[Connection] ${socket.id}`);
 
         socket.once('4ALSplayerDataHost', (player) => {
@@ -86,29 +87,35 @@ export default function (io) {
         });
 
         socket.on('4ALSplayerData', (player) => {
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                io.in(player.socketId).emit("4ALS error", "Choississez un pseudo qu'avec des caractères alphanumériques");
-                
-            }
-            else {
-                console.log(`[Joining] ${player.username} join la room ` + player.roomId);
-                player.username = xss(player.username);
-                player.host = false;
-                player.roomId = parseInt(player.roomId);
-                player.points = 0;
-
-                p = player;
-                r = rooms.find((room) => { return p.roomId === room.id; });
-                if (!r) {
-                    socket.disconnect();
+            try{
+                if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+                    io.in(player.socketId).emit("4ALS error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+                    
                 }
                 else {
-                    r.players.push(player);
-                    io.to(p.roomId).emit("4ALS new player", p);
-                    socket.join(p.roomId);
-                    io.to(socket.id).emit("4ALS player init", r, p);
+                    console.log(`[Joining] ${player.username} join la room ` + player.roomId);
+                    player.username = xss(player.username);
+                    player.host = false;
+                    player.roomId = parseInt(player.roomId);
+                    player.points = 0;
+    
+                    p = player;
+                    r = rooms.find((room) => { return p.roomId === room.id; });
+                    if (!r) {
+                        socket.disconnect();
+                    }
+                    else {
+                        r.players.push(player);
+                        io.to(p.roomId).emit("4ALS new player", p);
+                        socket.join(p.roomId);
+                        io.to(socket.id).emit("4ALS player init", r, p);
+                    }
                 }
+            } catch(e){
+                console.error("Il y a eu un pb dans 4ALSplayerData : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur lors de la connexion")
             }
+            
         });
 
         socket.on("4ALS current player", (player) => {
@@ -129,9 +136,15 @@ export default function (io) {
         });
 
         socket.on("4ALS start", () => {
-            if (p && p.host) {
-                r.state.start = true;
-                io.to(p.roomId).emit("4ALS start", r);
+            try{
+                if (p && p.host) {
+                    r.state.start = true;
+                    io.to(p.roomId).emit("4ALS start", r);
+                }
+            }
+            catch(e){
+                console.error("Il y a eu un pb dans 4ALS start : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur pour commencer le 4ALS")
             }
         });
 
@@ -162,44 +175,61 @@ export default function (io) {
 
 
         socket.on("disconnect", () => {
-            console.log(`[Disconnection] ${socket.id}`);
-            if (p && !p.host) {
-                console.log(`Bye bye ${p.username}`);
-
-                io.to(p.roomId).emit("4ALS remove player", p);
-                if (r) {
-                    r.players = r.players.filter((player) => player.username !== p.username);
+            try{
+                console.log(`[Disconnection] ${socket.id}`);
+                if (p && !p.host) {
+                    console.log(`Bye bye ${p.username}`);
+    
+                    io.to(p.roomId).emit("4ALS remove player", p);
+                    if (r) {
+                        r.players = r.players.filter((player) => player.username !== p.username);
+                    }
+    
                 }
-
-            }
-            else if (p && p.host) {
-                console.log(`Bye bye host ${p.username}`);
-                io.in(p.roomId).disconnectSockets();
-                rooms = rooms.filter((room) => room.id !== p.roomId);
-                listeCodes = listeCodes.filter((code) => code !== p.roomId);
+                else if (p && p.host) {
+                    console.log(`Bye bye host ${p.username}`);
+                    io.in(p.roomId).disconnectSockets();
+                    rooms = rooms.filter((room) => room.id !== p.roomId);
+                    listeCodes = listeCodes.filter((code) => code !== p.roomId);
+                }
+            } catch(e){
+                console.error("Il y a eu un pb dans 4ALS disconnect : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur lors de la déconnexion")
             }
         });
 
         socket.on("4ALS answer", (bool) => {
-            if (p && p.host&&r.state.start){
-                if (bool){
-                    r.state.score++;
-                    if (r.state.score>r.state.maxScore){
-                        r.state.maxScore=r.state.score;
+            try{
+                if (p && p.host&&r.state.start){
+                    if (bool){
+                        r.state.score++;
+                        if (r.state.score>r.state.maxScore){
+                            r.state.maxScore=r.state.score;
+                        }
                     }
-                }
-                else{
-                    r.state.score=0;
-                }
-                io.to(p.roomId).emit("4ALS answer", bool,r.state);
-            } 
+                    else{
+                        r.state.score=0;
+                    }
+                    io.to(p.roomId).emit("4ALS answer", bool,r.state);
+                } 
+            } catch(e){
+                console.error("Il y a eu un pb dans 4ALS answer : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur lors de la réponse")
+            }
+
         });
 
         socket.on("4ALS time", (time) => {
-            if (p && p.host) {
-                r.options.roundTime=time;
-                io.to(p.roomId).emit("4ALS time", time);
+            try{    
+                if (p && p.host) {
+                    r.options.roundTime=time;
+                    io.to(p.roomId).emit("4ALS time", time);
+                }
+            } catch(e){
+                console.error("Il y a eu un pb dans 4ALS time : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur pour changer le temps")
             }
+
         });
 
         socket.on('4ALS change points', (username,points)=>{
@@ -223,15 +253,21 @@ export default function (io) {
         });
 
         socket.on("4ALSkick", (socketId) => {
-            var bool = false;
-            if (p.host) {
-                bool = true;
-                io.in(socketId).disconnectSockets();
-                
+            try{
+                var bool = false;
+                if (p.host) {
+                    bool = true;
+                    io.in(socketId).disconnectSockets();
+                    
+                }
+                if (bool) {
+                    io.to(socket.id).emit("kick-success");
+                }
+            } catch(e){
+                console.error("Il y a eu un pb dans 4ALS kick : "+e);
+                io.in(p.roomID).emit("4ALS alert","Erreur pour kick")
             }
-            if (bool) {
-                io.to(socket.id).emit("kick-success");
-            }
+
         });
 
 
@@ -245,9 +281,14 @@ export default function (io) {
     });
   
     function resetPoints(r){
-        r.players.forEach((p)=>{
-            p.points=0;
-        });
+        try{
+            r.players.forEach((p)=>{
+                p.points=0;
+            });
+        }
+        catch(e){
+            console.error("Il y a eu un pb dans resetPoints : "+e);
+        }
     }
     return router;
 

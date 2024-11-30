@@ -153,11 +153,17 @@ export default function (io) {
         });
 
         socket.on("FAF time", (roundTime) => {
-            if (p && p.host) {
-                console.log(`[FAF ${r.id}] Time : `+roundTime);
-                r.options.roundTime = roundTime;
-                fafNamespace.to(p.roomId).emit("FAF time", r);
+            try {
+                if (p && p.host) {
+                    console.log(`[FAF ${r.id}] Time : `+roundTime);
+                    r.options.roundTime = roundTime;
+                    fafNamespace.to(p.roomId).emit("FAF time", r);
+                }
+            } catch (error) {
+                console.error("Il y a eu un pb dans FAF time : "+e);
+                io.in(p.roomID).emit("FAF alert","Erreur pour changer le temps")
             }
+
         });
 
         socket.on("FAF current player", (player,rang) => {
@@ -181,19 +187,25 @@ export default function (io) {
         });
 
         socket.on("FAF whitelist",(bool,whitelist)=>{
-            if (p && p.host) {
-                console.log(`[FAF ${r.id}] whitelist : `+bool);
-                r.options.whitelistEnabled=bool;
-                if (bool){
-                    if (/^[A-Za-z0-9\s;]+$/.test(whitelist)){
-                        r.options.whitelist=whitelist.split(";");
+            try {
+                if (p && p.host) {
+                    console.log(`[FAF ${r.id}] whitelist : `+bool);
+                    r.options.whitelistEnabled=bool;
+                    if (bool){
+                        if (/^[A-Za-z0-9\s;]+$/.test(whitelist)){
+                            r.options.whitelist=whitelist.split(";");
+                        }
+                        else{
+                            socket.emit("FAF alert","La whitelist n'est pas valide");
+                        }
                     }
-                    else{
-                        socket.emit("FAF alert","La whitelist n'est pas valide");
-                    }
+                    fafNamespace.to(p.roomId).emit("FAF whitelist", r);
                 }
-                fafNamespace.to(p.roomId).emit("FAF whitelist", r);
+            } catch (error) {
+                console.error("Il y a eu un pb dans FAF whitelist : "+e);
+                io.in(p.roomID).emit("FAF alert","Erreur pour changer la whitelist")
             }
+
         });
 
         socket.on("FAF start",()=>{
@@ -363,54 +375,66 @@ export default function (io) {
         });     
 
         socket.on("FAF kick", (socketId) => {
-            if (p && p.host&&!r.state.start) {
-                var bool = false;
-                if (p.host && !r.state.start) {
-                    console.log(`[FAF ${r.id}] kick ${socketId}`);
-                    bool = true;
-                    fafNamespace.in(socketId).emit("error", "Vous avez été kické de la partie")
-                    fafNamespace.in(socketId).disconnectSockets();
-                }
-                if (bool) {
-                    fafNamespace.to(socket.id).emit("kick-success");
-                }
-        }
+            try {
+                if (p && p.host&&!r.state.start) {
+                    var bool = false;
+                    if (p.host && !r.state.start) {
+                        console.log(`[FAF ${r.id}] kick ${socketId}`);
+                        bool = true;
+                        fafNamespace.in(socketId).emit("error", "Vous avez été kické de la partie")
+                        fafNamespace.in(socketId).disconnectSockets();
+                    }
+                    if (bool) {
+                        fafNamespace.to(socket.id).emit("kick-success");
+                    }
+            }
+            } catch (error) {
+                console.error("Il y a eu un pb dans FAF kick : "+e);
+                io.in(p.roomID).emit("FAF alert","Erreur pour kick un joueur")
+            }
+ 
         });
 
         socket.on("disconnect", () => {
-            console.log(`[FAF] ${socket.id} disconnected`);
-            if (p && !p.host) {
-                console.log(`Bye bye ${p.username}`);
-
-                if (p.player){
-
-                    
-                    if (r) {
-                        if (r.state.start){
-                            fafNamespace.in(p.roomId).disconnectSockets();
-                            fafNamespace.in(p.roomId).emit("FAF error", "Un joueur a quitté la partie, veuillez la relancer et remettre les points");
-                        }
-                        r.players = r.players.filter((player) => player.username !== p.username);
-                        r.spectateurs = r.spectateurs.filter((player) => player.username !== p.username);
+            try {
+                console.log(`[FAF] ${socket.id} disconnected`);
+                if (p && !p.host) {
+                    console.log(`Bye bye ${p.username}`);
+    
+                    if (p.player){
+    
                         
+                        if (r) {
+                            if (r.state.start){
+                                fafNamespace.in(p.roomId).disconnectSockets();
+                                fafNamespace.in(p.roomId).emit("FAF error", "Un joueur a quitté la partie, veuillez la relancer et remettre les points");
+                            }
+                            r.players = r.players.filter((player) => player.username !== p.username);
+                            r.spectateurs = r.spectateurs.filter((player) => player.username !== p.username);
+                            
+                        }
+                        fafNamespace.to(p.roomId).emit("FAF remove player", r);
                     }
-                    fafNamespace.to(p.roomId).emit("FAF remove player", r);
-                }
-                else{
-                    
-                    if (r) {
-                        r.spectateurs = r.spectateurs.filter((player) => player.username !== p.username);
+                    else{
+                        
+                        if (r) {
+                            r.spectateurs = r.spectateurs.filter((player) => player.username !== p.username);
+                        }
+                        fafNamespace.to(p.roomId).emit("FAF remove spectateur", r,p);
                     }
-                    fafNamespace.to(p.roomId).emit("FAF remove spectateur", r,p);
+    
                 }
+                else if (p && p.host) {
+                    console.log(`Bye bye host ${p.username}`);
+                    fafNamespace.in(p.roomId).disconnectSockets();
+                    rooms = rooms.filter((room) => room.id !== p.roomId);
+                    listeCodes = listeCodes.filter((code) => code !== p.roomId);
+                }
+            } catch (error) {
+                console.error("Il y a eu un pb dans FAF disconnect : "+e);
+                io.in(p.roomID).emit("FAF alert","Erreur lors d'une déconnexion")
+            }
 
-            }
-            else if (p && p.host) {
-                console.log(`Bye bye host ${p.username}`);
-                fafNamespace.in(p.roomId).disconnectSockets();
-                rooms = rooms.filter((room) => room.id !== p.roomId);
-                listeCodes = listeCodes.filter((code) => code !== p.roomId);
-            }
         });
 
 

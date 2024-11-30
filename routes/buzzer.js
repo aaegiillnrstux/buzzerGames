@@ -127,14 +127,20 @@ export default function (io) {
         });
 
         socket.on("changeMode", (mode) => {
-            console.log("Receiving changeMode");
+            try{
+                console.log("Receiving changeMode");
 
-            if (p.host) {
-                console.log(`[Changing mode ${r.id}] from ${r.options.mode} to ${mode}`);
-                r.options.mode = mode;
-                socket.emit("modeChanged");
-                console.log(rooms);
+                if (p.host) {
+                    console.log(`[Changing mode ${r.id}] from ${r.options.mode} to ${mode}`);
+                    r.options.mode = mode;
+                    socket.emit("modeChanged");
+                    console.log(rooms);
+                }
+            } catch(e){
+                console.log(e);
+                io.in(p.roomId).emit("alert", "Erreur de changement de mode. Rééssayez");
             }
+
         });
 
         socket.on("libere", (str) => {
@@ -232,7 +238,8 @@ export default function (io) {
         });
 
         socket.on("buzz", () => {
-            console.log(`[Buzz ${r.id}] ${p.username}`);
+            try {
+                console.log(`[Buzz ${r.id}] ${p.username}`);
             if (r.options.mode === "default-mode" && p.free && !p.host) {
                 console.log(`[Buzz ${r.id}] ${p.username} confirmed default`);
                 socket.to(r.id).emit("block");
@@ -263,47 +270,74 @@ export default function (io) {
                 p.locked = false;
                 p.free = false;
             }
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de buzz. Rééssayez");
+            }
+            
         });
 
         socket.on("changePointsMode",(bool)=>{
-            if (bool != r.options.point){
-                r.options.point=bool;
-                if (bool){
-                    resetPoints(r);
-                    io.to(p.roomId).emit("show scores", r);
+            try {
+                if (bool != r.options.point){
+                    r.options.point=bool;
+                    if (bool){
+                        resetPoints(r);
+                        io.to(p.roomId).emit("show scores", r);
+                    }
+                    else{
+                        io.to(p.roomId).emit("unshow scores", r);
+                    }
                 }
-                else{
-                    io.to(p.roomId).emit("unshow scores", r);
-                }
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de modification des points. Rééssayez");
             }
+
         });
 
         socket.on("change9PGMode",(bool)=>{
-            if (bool != r.options.npg){
-                console.log(`changing 9PG mode ${bool}`);
-                r.options.npg=bool;
-                r.options.point=bool;
-                r.options.nbpoint=1;
-                if (bool){
-                    resetPoints(r);
-                    io.to(p.roomId).emit("show scores", r);
+            try {
+                if (bool != r.options.npg){
+                    console.log(`changing 9PG mode ${bool}`);
+                    r.options.npg=bool;
+                    r.options.point=bool;
+                    r.options.nbpoint=1;
+                    if (bool){
+                        resetPoints(r);
+                        io.to(p.roomId).emit("show scores", r);
+                    }
+                    else{
+                        io.to(p.roomId).emit("unshow scores", r);
+                        io.to(p.roomId).emit("unqualifie", p);
+                    }
                 }
-                else{
-                    io.to(p.roomId).emit("unshow scores", r);
-                    io.to(p.roomId).emit("unqualifie", p);
-                }
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de modification des points. Rééssayez");
             }
+
         });
 
         socket.on('resetPoints',()=>{
-            resetPoints(r);
-            r.options.nbpoint=1;
-            io.to(p.roomId).emit("show scores",r);
+            try {
+                resetPoints(r);
+                r.options.nbpoint=1;
+                io.to(p.roomId).emit("show scores",r);
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de réinitialisation des points. Rééssayez");
+            }
         });
 
         socket.on('passer',()=>{
-            r.options.nbpoint=(r.options.nbpoint % 3) +1;
-            io.to(p.roomId).emit("passer",r.options.nbpoint);
+            try{
+                r.options.nbpoint=(r.options.nbpoint % 3) +1;
+                io.to(p.roomId).emit("passer",r.options.nbpoint);
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de passage de tour. Rééssayez");
+            }
         });
 
         socket.on('change points', (username,points)=>{
@@ -354,7 +388,8 @@ export default function (io) {
         });
 
         socket.on("disconnect", () => {
-            console.log(`[Disconnection] ${socket.id}`);
+            try {
+                console.log(`[Disconnection] ${socket.id}`);
             if (p && !p.host) {
                 console.log(`Bye bye ${p.username}`);
 
@@ -370,6 +405,11 @@ export default function (io) {
                 rooms = rooms.filter((room) => room.id !== p.roomId);
                 listeCodes = listeCodes.filter((code) => code !== p.roomId);
             }
+            } catch (error) {
+                console.log(error);
+                io.in(p.roomId).emit("alert", "Erreur de déconnexion. Rééssayez");
+            }
+            
         });
 
         socket.on("latencyIn",(start)=>{
