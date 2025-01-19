@@ -114,6 +114,9 @@ $('.case-finale').on('click',(e)=>{
         if (!$(e.target).hasClass("good-block")){
             var number = parseInt($(e.target).data("case"));
             $(e.target).addClass("good-block");
+            $('.case-finale').on('click',(e)=> {
+                $(e.target).toggleClass('active');
+            });
             $(e.target).text(finaleQuestions[number-1].answer);
             lowLag.play('/components/Ding.mp3');
             socket.emit("Conquiz finale answer",number);
@@ -288,6 +291,7 @@ $("#finale-launch").on('click',(e)=>{
     }
     else{
         alert("Erreur dans les questions de la finale");
+        return;
     }
     if ($("#conquiz-finale-time").val()){
         timeFinale=$("#conquiz-finale-time").val();

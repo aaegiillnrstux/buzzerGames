@@ -56,7 +56,18 @@
   background-color: #090097; /* Dark blue background */
   border: 5px solid #4B00A5; /* Purple border */
   color: #FFFFFF; /* White text */
-  font-size: 100%;
+  font-size: clamp(12px, 4vw, 24px); /* Responsive font size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
+.case-finale.active {
+  background-color: #3aeb30;
 }
 
 .theme {
