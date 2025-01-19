@@ -318,12 +318,14 @@ socket.on("Conquiz unblock finale",(r)=>{
 
 socket.on("Conquiz finale answer",(number)=>{
     $(`#finale-${number}`).addClass("good-block");
+    $(`#finale-${number}`).toggleClass('active');
     // lowLag.play('/components/Ding.mp3');
     $(`#finale-${number}`).text(currentRoom.state.finaleQuestions[number-1].answer);
 })
 
 socket.on("Conquiz finale unanswer",(number)=>{
     $(`#finale-${number}`).removeClass("good-block");
+    $(`#finale-${number}`).toggleClass('active');
     $(`#finale-${number}`).text(currentRoom.state.finaleQuestions[number-1].question);
 });
 
