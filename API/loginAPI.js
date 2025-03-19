@@ -62,7 +62,7 @@ export default function (io) {
 				{
 					id: user._id,
 					username: user.username,
-					role: user.role
+					triviarole: user.triviarole
 				},
 				process.env.JWT_SECRET,
 				{
@@ -125,7 +125,7 @@ export default function (io) {
 				{
 					id: user._id,
 					username: user.username,
-					role: user.role
+					triviarole: user.triviarole
 				},
 				process.env.JWT_SECRET,
 				{

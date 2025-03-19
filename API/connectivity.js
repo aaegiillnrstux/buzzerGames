@@ -55,8 +55,8 @@ function isConnected(req, res, next) {
                 console.log(err.message);
                 next(false,null);
             } else {
-                if (decodedToken.role) {
-                    next(true, decodedToken.role);
+                if (decodedToken.triviarole) {
+                    next(true, decodedToken.triviarole);
                 }
             }
         });
