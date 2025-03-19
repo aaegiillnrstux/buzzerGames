@@ -111,10 +111,10 @@ $('.block').on('click',(e)=>{
 
 $('.case-finale').on('click',(e)=>{
     if (currentRoom.state.finaleQuestions!=null){
+        $(e.target).toggleClass('active');
         if (!$(e.target).hasClass("good-block")){
             var number = parseInt($(e.target).data("case"));
             $(e.target).addClass("good-block");
-            $(e.target).toggleClass('active');
             $(e.target).text(finaleQuestions[number-1].answer);
             lowLag.play('/components/Ding.mp3');
             socket.emit("Conquiz finale answer",number);
