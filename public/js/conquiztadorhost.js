@@ -48,9 +48,11 @@ $("#form-pseudo").on('submit', function (e){
     myplayer.username= $('#username').val();
     myplayer.roomId=$("#code").val();
     myplayer.socketId=socket.id;
+    const barLength = parseInt($('#barLength').val());
     stringQuestion=$("#listeQuestions").val();
     if (checkQuestions(stringQuestion)){
         $("#user-card").hide("slow");
+        
         $('#app-div-manche1').show("slow");
         $('#settings-button').show("slow");
         $('#settings-button').on("click", (e)=>{
@@ -61,7 +63,7 @@ $("#form-pseudo").on('submit', function (e){
                 $('#settings').show("slow");
             }
         });
-        socket.emit("Conquiz playerDataHost",myplayer,themesList);
+        socket.emit("Conquiz playerDataHost",myplayer,themesList,barLength);
         socket.emit("Conquiz couleurs",$('#ColorInput1').val(),$('#ColorInput2').val());
     }
 });
@@ -433,6 +435,8 @@ socket.on("Conquiz finale questions", (room) => {
 socket.on("Conquiz start manche2", (room) => {
     console.log("start manche2");
     currentRoom=room;
+    const maxPoints = room.options?.barLength || 18;
+    drawTicks(maxPoints);
     $('#app-div-manche1').hide("slow");
     $('#app-div-manche2').show("slow");
     timerFinale=clearInterval(timerFinale);
@@ -649,9 +653,27 @@ function updatePoints(){
     }
 }
 
+function drawTicks(maxPoints) {
+    const tickContainer = document.getElementById("bar-ticks");
+    if (!tickContainer) return;
+
+    tickContainer.innerHTML = ""; // Clear existing ticks
+
+    for (let i = 1; i < maxPoints; i++) {
+        const x = (800 / maxPoints) * i;
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x);
+        line.setAttribute("x2", x);
+        line.setAttribute("y1", 0);
+        line.setAttribute("y2", 40);
+        line.setAttribute("stroke", "black");
+        tickContainer.appendChild(line);
+    }
+}
+
 async function moveBarre(pointsA,pointsB){
     console.log(pointsA,pointsB);
-    var unPoint=100.0/18.0;
+    var unPoint=100.0/currentRoom.options?.barLength;
     var baseA = 100-extractNumberFromPercent($("#grad-interieur-white-1").attr("offset"));
     var ecartA = pointsA*unPoint-baseA;
     var baseB = extractNumberFromPercent($("#grad-interieur-white-2").attr("offset"));

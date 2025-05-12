@@ -65,7 +65,7 @@ export default function (io) {
         var r;
         console.log(`[Connection] ${socket.id}`);
 
-        socket.once('Conquiz playerDataHost', (player,themesList) => {
+        socket.once('Conquiz playerDataHost', (player,themesList,barLength) => {
             console.log("Receiving playerDataHost in Conquiz");
             if (!/^[A-Za-z0-9]*[A-Za-z0-9]+[A-Za-z0-9]*$/.test(player.username)) {
                 socket.disconnect();
@@ -77,7 +77,7 @@ export default function (io) {
                 player.points = 0;
                 player.player = true;
                 p = player;
-                r = { players: [], spectateurs: [], id: player.roomId, state: { manche: 1, buzzed: false, block: false, currentPointsManche2: 0, main:null,themesList:themesList,questionid:null,question:null,usedBlocks:[],finaleQuestions:null},options:{roundTime:10,whitelistEnabled:false,whitelist:[],couleurs:["#162d94","#ffa500"]} };
+                r = { players: [], spectateurs: [], id: player.roomId, state: { manche: 1, buzzed: false, block: false, currentPointsManche2: 0, main:null,themesList:themesList,questionid:null,question:null,usedBlocks:[],finaleQuestions:null},options:{roundTime:10,whitelistEnabled:false,whitelist:[],couleurs:["#162d94","#ffa500"],barLength:parseInt(barLength)||18} };
                 rooms.push(r);
                 socket.join(p.roomId);
                 console.log(`[Hosting Conquiz] ${p.username} host la room ` + p.roomId);
