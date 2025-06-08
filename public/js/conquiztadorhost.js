@@ -116,10 +116,11 @@ $('.case-finale').on('click',(e)=>{
     if (currentRoom.state.finaleQuestions!=null){
         $(e.target).toggleClass('active');
         if (!$(e.target).hasClass("good-block")){
+            lowLag.play('/components/Ding.mp3');
             var number = parseInt($(e.target).data("case"));
             $(e.target).addClass("good-block");
             $(e.target).text(finaleQuestions[number-1].answer);
-            lowLag.play('/components/Ding.mp3');
+            
             socket.emit("Conquiz finale answer",number);
         }
         else{
@@ -132,18 +133,20 @@ $('.case-finale').on('click',(e)=>{
 })
 
 $('#Faux-manche1').on('click',(e)=>{
+    lowLag.play('/components/Mauvaise_reponse.mp3');
     if (currentRoom.state.question!=null){
         $(`#${currentRoom.state.questionid}`).addClass("bad-block");
     }
-    lowLag.play('/components/Mauvaise_reponse.mp3');
+    
     socket.emit("Conquiz answer",false,$('#question-div').data("points"));
 });
 
 $('#Vrai-manche1').on('click',(e)=>{
+    lowLag.play('/components/Bonne_reponse.mp3');
     if (currentRoom.state.question!=null){
         $(`#${currentRoom.state.questionid}`).addClass("good-block");
     }
-    lowLag.play('/components/Bonne_reponse.mp3');
+    
     socket.emit("Conquiz answer",true,$('#question-div').data("points"));
 });
 
@@ -194,10 +197,11 @@ function questionSuivante(){
 }
 
 $("#Show-Themes").on('click',async (e)=>{
+    lowLag.play('/components/Presentation_des_3_themes.mp3');
     $("#Show-Themes").hide("slow");
     $("#Show-Themes").off('click');
     socket.emit("Conquiz theme");
-    lowLag.play('/components/Presentation_des_3_themes.mp3');
+    
     $("#theme1").css("visibility","visible");
     await sleep(1300);
     $("#theme2").css("visibility","visible");
@@ -499,15 +503,16 @@ socket.on("Conquiz question",(room,question)=>{
 
 socket.on("Conquiz buzzed", (room,rang)=>{
     console.log("buzzed")
-    currentRoom=room;
-    currentPlayer=rang-1;
-    myplayer.state="buzzed";
     if (rang==1){
         lowLag.play('/components/Buzzer_Joueur_1_Champion.mp3');
     }
     else{
         lowLag.play('/components/Buzzer_Joueur_2_Challenger.mp3');
     }
+    currentRoom=room;
+    currentPlayer=rang-1;
+    myplayer.state="buzzed";
+
     $("#buzzer").off('click');
     $("#buzzer-state").text("Buzzed");
     $("#buzzer-circle").attr('fill',"red");

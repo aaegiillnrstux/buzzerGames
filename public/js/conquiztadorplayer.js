@@ -285,17 +285,17 @@ socket.on("Conquiz libere", (r)=>{
 });
 
 socket.on("Conquiz buzzed", (room,rang)=>{
-    $(`.joueur${rang}-card`).css('background-color',room.options.couleurs[rang-1]);
-    console.log("buzzed")
-    currentRoom=room;
-    myplayer.state="buzzed";
-    currentPlayer=rang-1;
     if (rang==1){
         lowLag.play('/components/Buzzer_Joueur_1_Champion.mp3');
     }
     else{
         lowLag.play('/components/Buzzer_Joueur_2_Challenger.mp3');
     }
+    $(`.joueur${rang}-card`).css('background-color',room.options.couleurs[rang-1]);
+    console.log("buzzed")
+    currentRoom=room;
+    myplayer.state="buzzed";
+    currentPlayer=rang-1;
     $("#buzzer").off('click');
     $("#buzzer-state").text("Buzzed");
     $("#buzzer-circle").attr('fill',"red");
@@ -349,10 +349,11 @@ socket.on("Conquiz end", ()=>{
 });
 
 socket.on("Conquiz update currentPoints",(currentPoints)=>{
+    lowLag.play('/components/Change.mp3');
     if (konamiActive){
         $("#konami-number-number").text(currentPoints);
     }
-    lowLag.play('/components/Change.mp3');
+    
     $("#success-alert").html(`<strong>Nous passons à ${currentPoints} </strong>`);
     $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
         $("#success-alert").slideUp(500);
