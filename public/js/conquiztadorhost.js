@@ -29,6 +29,7 @@ var timerFinale;
 var tempsMovement=1;
 var nbPas=50;
 var reponsesEstimation=[];
+var pointMode = "questions";
 
 
 lowLag.init();
@@ -176,6 +177,16 @@ function questionSuivante(){
     if (indexQuestionsManche2<questionsManche2.length){
         socket.emit("Conquiz question manche2",questionsManche2[indexQuestionsManche2]);
         indexQuestionsManche2+=1;
+        if (pointMode === "questions") {
+            if (indexQuestionsManche2 % 6 === 0 && currentPoints < pointMaxManche2) {
+                currentPoints++;
+                $("#success-alert").html(`<strong>Nous passons à ${currentPoints} points !</strong>`);
+                $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                    $("#success-alert").slideUp(500);
+                });
+                socket.emit("Conquiz update currentPoints", currentPoints);
+            }
+        }
     }
     else{
         console.log("Fin des questions");
@@ -263,6 +274,7 @@ socket.on("Conquiz unblock finale",(r)=>{
 const takeEveryTwo = (arr) => arr.filter((item, index) => (index % 2) === 0);
 
 $("#conquiz-manche2-button").on('click',(e)=>{
+    pointMode = $("#conquiz-mode-select").val();
     if ($('#conquiz-pointmax').val()){
         pointMaxManche2=$('#conquiz-pointmax').val();
     }
@@ -273,11 +285,16 @@ $("#conquiz-manche2-button").on('click',(e)=>{
         questionsManche2 = $("#conquiz-questions").val().split("\n");
         questionsManche2 = takeEveryTwo(questionsManche2);
     }
-    currentPoints=1;
-    pointsCountdown=setInterval(updatePoints,1000)
+    
+    if (pointMode === "time") {
+        pointsCountdown = setInterval(updatePoints, 1000);
+        dateEstimation = new Date().getTime();
+    }
     timerManche2=setInterval(updateTimer,100);
     dateEstimation=new Date().getTime();
     secEcouler=0;
+    indexQuestionsManche2=0;
+    currentPoints=1;
     liberer();
     $("#modal-manche2").modal("hide");
 
@@ -699,7 +716,7 @@ function extractNumberFromPercent(percent){
 
 function updateTimer(){
     secEcouler=Math.floor((new Date().getTime()-dateEstimation)/1000);
-    $('#countdown-manche2').text(`${Math.floor(secEcouler/60)}:${secEcouler%60}`)
+    $('#countdown-manche2').text(`${Math.floor(secEcouler/60)}:${secEcouler%60}   nbQuestions: ${indexQuestionsManche2}   Points: ${currentPoints}`);
 }
 
 function updateFinaleTimer(){

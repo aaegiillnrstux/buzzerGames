@@ -417,8 +417,8 @@ export default function (io) {
             if (p && p.host && r.players[rang] && r.players[1-rang]) {
                 console.log(`[Conquiz ${r.id}] update score`);
                 r.players[rang].points+=parseInt(point);
-                if (r.players[rang].points+r.players[1-rang].points>18){
-                    r.players[1-rang].points = 18-r.players[rang].points;
+                if (r.players[rang].points+r.players[1-rang].points>r.options.barLength){
+                    r.players[1-rang].points = r.options.barLength-r.players[rang].points;
                 }
                 if (r.players[rang].points<0){
                     r.players[1-rang].points-=r.players[rang].points;
@@ -428,8 +428,8 @@ export default function (io) {
                     r.players[rang].points-=r.players[1-rang].points;
                     r.players[1-rang].points=0;
                 }
-                if (r.players[rang].points>18){
-                    r.players[rang].points=18;
+                if (r.players[rang].points>r.options.barLength){
+                    r.players[rang].points=r.options.barLength;
                 }
                 console.log(`[Conquiz ${r.id}] ${r.players[rang].username} a maintenant ${r.players[rang].points} points`);
                 ConquiztadorNS.to(p.roomId).emit("Conquiz update score",r.players[rang],r);
