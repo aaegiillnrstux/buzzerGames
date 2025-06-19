@@ -181,7 +181,7 @@ function questionSuivante(){
         socket.emit("Conquiz question manche2",questionsManche2[indexQuestionsManche2]);
         indexQuestionsManche2+=1;
         if (pointMode === "questions") {
-            if (indexQuestionsManche2 % 6 === 0 && currentPoints < pointMaxManche2) {
+            if (indexQuestionsManche2 % 6 === 1 && currentPoints < pointMaxManche2) {
                 currentPoints++;
                 $("#success-alert").html(`<strong>Nous passons à ${currentPoints} points !</strong>`);
                 $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
