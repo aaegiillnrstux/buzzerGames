@@ -289,16 +289,17 @@ $("#conquiz-manche2-button").on('click',(e)=>{
         questionsManche2 = $("#conquiz-questions").val().split("\n");
         questionsManche2 = takeEveryTwo(questionsManche2);
     }
-    
+    currentPoints=0;
     if (pointMode === "time") {
         pointsCountdown = setInterval(updatePoints, 1000);
         dateEstimation = new Date().getTime();
+        currentPoints=1;
     }
     timerManche2=setInterval(updateTimer,100);
     dateEstimation=new Date().getTime();
     secEcouler=0;
     indexQuestionsManche2=0;
-    currentPoints=1;
+    
     liberer();
     $("#modal-manche2").modal("hide");
 
