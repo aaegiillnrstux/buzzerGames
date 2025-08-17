@@ -150,6 +150,32 @@ socket.on("latencyOut",(start)=>{
     socket.emit("latencyIn",start);
 });
 
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'hidden' : 'visible';
+  socket.emit('playerVisibility', {
+    username: player.username,
+    state,           // 'hidden' ou 'visible'
+    at: Date.now()
+  });
+});
+
+window.addEventListener('blur', () => {
+  socket.emit('playerBlur', {
+    username: player.username,
+    state: 'blur',
+    at: Date.now()
+  });
+});
+
+window.addEventListener('focus', () => {
+  socket.emit('playerFocus', {
+    username: player.username,
+    state: 'focus',
+    at: Date.now()
+  });
+});
+
+
 function liberer(){
     console.log("libere");
     $("#buzzer-state").text("BUZZ");

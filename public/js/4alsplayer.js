@@ -128,6 +128,31 @@ socket.on("4ALS update score",(player,room)=>{
     $(`#${player.username}-score`).text(player.points);
 });
 
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'hidden' : 'visible';
+  socket.emit('4ALS playerVisibility', {
+    username: player.username,
+    state,           // 'hidden' ou 'visible'
+    at: Date.now()
+  });
+});
+
+window.addEventListener('blur', () => {
+  socket.emit('4ALS playerBlur', {
+    username: player.username,
+    state: 'blur',
+    at: Date.now()
+  });
+});
+
+window.addEventListener('focus', () => {
+  socket.emit('4ALS playerFocus', {
+    username: player.username,
+    state: 'focus',
+    at: Date.now()
+  });
+});
+
 socket.on("disconnect",()=>{
     alert("L'hôte s'est déconnecté");
     document.location.href="/";

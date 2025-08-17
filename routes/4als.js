@@ -244,7 +244,17 @@ export default function (io) {
                 console.error("Il y a eu un pb dans 4ALS change points : "+e);
                 io.in(p.roomID).emit("4ALS alert","Erreur pour changer les points")
             }
+        });
 
+        
+        socket.on("4ALS playerVisibility", (data) => {
+            console.log(`[Visibility ${r.id}] ${p.username} is now ${data.state}`);
+        });
+        socket.on("4ALS playerBlur", (data) => {
+            console.log(`[Blur ${r.id}] ${p.username} n'est plus sur la page`);
+        });
+        socket.on("4ALS playerFocus", (data) => {
+            console.log(`[Focus ${r.id}] ${p.username} est de retour`);
         });
 
 

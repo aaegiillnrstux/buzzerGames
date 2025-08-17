@@ -395,6 +395,17 @@ export default function (io) {
  
         });
 
+
+        socket.on("FAF playerVisibility", (data) => {
+            console.log(`[Visibility ${r.id}] ${p.username} is now ${data.state}`);
+        });
+        socket.on("FAF playerBlur", (data) => {
+            console.log(`[Blur ${r.id}] ${p.username} n'est plus sur la page`);
+        });
+        socket.on("FAF playerFocus", (data) => {
+            console.log(`[Focus ${r.id}] ${p.username} est de retour`);
+        });
+
         socket.on("disconnect", () => {
             try {
                 console.log(`[FAF] ${socket.id} disconnected`);

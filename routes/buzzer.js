@@ -147,7 +147,6 @@ export default function (io) {
             try{
                 console.log(`[Free ${r.id}] ${p.username}`);
                 if ((p.buzzed || p.locked) && !p.free) {
-                    console.log(`[Freeing ${r.id}] ${p.username}`);
                     p.buzzed = false;
                     p.locked = false;
                     p.free = true;
@@ -239,7 +238,6 @@ export default function (io) {
 
         socket.on("buzz", () => {
             try {
-                console.log(`[Buzz ${r.id}] ${p.username}`);
             if (r.options.mode === "default-mode" && p.free && !p.host) {
                 console.log(`[Buzz ${r.id}] ${p.username} confirmed default`);
                 socket.to(r.id).emit("block");
@@ -385,6 +383,16 @@ export default function (io) {
                 console.log(err);
                 io.in(p.roomId).emit("alert", "Erreur de modification des points. Rééssayez");
             }
+        });
+
+        socket.on("playerVisibility", (data) => {
+            console.log(`[Visibility ${r.id}] ${p.username} is now ${data.state}`);
+        });
+        socket.on("playerBlur", (data) => {
+            console.log(`[Blur ${r.id}] ${p.username} n'est plus sur la page`);
+        });
+        socket.on("playerFocus", (data) => {
+            console.log(`[Focus ${r.id}] ${p.username} est de retour`);
         });
 
         socket.on("disconnect", () => {

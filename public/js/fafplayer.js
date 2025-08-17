@@ -216,6 +216,31 @@ socket.on("disconnect",()=>{
     document.location.href="/";
 });
 
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'hidden' : 'visible';
+  socket.emit('FAF playerVisibility', {
+    username: player.username,
+    state,           // 'hidden' ou 'visible'
+    at: Date.now()
+  });
+});
+
+window.addEventListener('blur', () => {
+  socket.emit('FAF playerBlur', {
+    username: player.username,
+    state: 'blur',
+    at: Date.now()
+  });
+});
+
+window.addEventListener('focus', () => {
+  socket.emit('FAF playerFocus', {
+    username: player.username,
+    state: 'focus',
+    at: Date.now()
+  });
+});
+
 socket.on("FAF error",(err)=>{
     alert(err);
     console.log(boite);
