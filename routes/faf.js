@@ -398,7 +398,7 @@ export default function (io) {
 
         socket.on("FAF playerVisibility", (data) => {
             try {
-                if (r && p) {
+                if (r && r.id && p && p.username) {
                     console.log(`[Visibility ${r.id}] ${p.username} is now ${data.state}`);
                 }
             } catch (error) {
@@ -408,7 +408,7 @@ export default function (io) {
         });
         socket.on("FAF playerBlur", (data) => {
             try {
-                if (r && p) {
+                if (r && r.id && p && p.username) {
                     console.log(`[Blur ${r.id}] ${p.username} n'est plus sur la page`);
                 }
             } catch (error) {
@@ -417,7 +417,7 @@ export default function (io) {
         });
         socket.on("FAF playerFocus", (data) => {
             try {
-                if (r && p) {
+                if (r && r.id && p && p.username) {
                     console.log(`[Focus ${r.id}] ${p.username} est de retour`);
                 }
             } catch (error) {
