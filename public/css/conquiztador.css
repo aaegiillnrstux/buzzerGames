@@ -53,9 +53,10 @@
   height: 150px; /* Large size */
   margin: 5px; /* Adjust spacing between boxes */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom, white, #A89EE4);
   background-color: #090097; /* Dark blue background */
   border: 5px solid #4B00A5; /* Purple border */
-  color: #FFFFFF; /* White text */
+  color: #21007F;
   font-size: clamp(12px, 4vw, 24px); /* Responsive font size */
   display: flex;
   justify-content: center;
@@ -67,7 +68,7 @@
 }
 
 .case-finale.active {
-  background-color: #3aeb30;
+  background: #00890d;
 }
 
 .theme {
