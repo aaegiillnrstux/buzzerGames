@@ -145,14 +145,13 @@ export default function (io) {
 
         socket.on("libere", (str) => {
             try{
-                console.log(`[Free ${r.id}] ${p.username}`);
                 if ((p.buzzed || p.locked) && !p.free) {
                     p.buzzed = false;
                     p.locked = false;
                     p.free = true;
                     if (p.host && str==="all") {
                         socket.to(r.id).emit("libere");
-                        console.log("clearing buzz");
+                        console.log(`[${p.roomId}] All players freed by host`);
                         io.to(r.id).emit("clear buzz");
                         r.buzzes=[];
                     }
@@ -175,15 +174,13 @@ export default function (io) {
 
         socket.on("block", (str="only") => {
             try{
-                console.log(`[Block ${r.id}] ${p.username}`);
                 if ((p.buzzed || p.free) && !p.locked) {
-                    console.log(`[Blocking ${r.id}] ${p.username}`);
                     p.buzzed = false;
                     p.locked = true;
                     p.free = false;
                     if (p.host && str==="all") {
                         socket.to(r.id).emit("block");
-                        console.log("testing");
+                        console.log(`[Blocking ${r.id}] All players blocked by host`);
                     }
                 }
                 else if ((p.locked || p.buzzed) && !p.free){

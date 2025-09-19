@@ -42,7 +42,6 @@ export default function (io) {
     router.get('/:code', (req, res) => {
         const code = parseInt(req.params.code);
         const room = rooms.find((room) => { return code === room.id; });
-        console.log("[Joining FAF] " + code );
 
         console.log(listeCodes);
         if (listeCodes.includes(code) && !room) {
