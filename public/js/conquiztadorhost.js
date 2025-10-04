@@ -114,19 +114,25 @@ $('.block').on('click',(e)=>{
 
 $('.case-finale').on('click',(e)=>{
     if (currentRoom.state.finaleQuestions!=null){
-        $(e.target).toggleClass('active');
-        if (!$(e.target).hasClass("good-block")){
+        const $block = $(e.currentTarget);
+        $block.toggleClass('active');
+        if (!$block.hasClass("good-block")){
             lowLag.play('/components/Ding.mp3');
-            var number = parseInt($(e.target).data("case"));
-            $(e.target).addClass("good-block");
-            $(e.target).text(finaleQuestions[number-1].answer);
-            
+            var number = parseInt($block.data("case"));
+            $block.addClass("good-block");
+            $block.text(finaleQuestions[number-1].answer);
+
             socket.emit("Conquiz finale answer",number);
         }
         else{
-            var number = parseInt($(e.target).data("case"));
-            $(e.target).removeClass("good-block");
-            $(e.target).text(finaleQuestions[number-1].question);
+            var number = parseInt($block.data("case"));
+            $block.removeClass("good-block");
+            if (checkImage(finaleQuestions[number-1].question)){
+                $block.html(`<img src="${finaleQuestions[number-1].question}" alt="Image question ${number}" style="width:100%; height:100%; object-fit:contain;">`);
+            }
+            else{
+                $block.text(finaleQuestions[number-1].question);
+            }
             socket.emit("Conquiz finale unanswer",number);
         }
     }
@@ -174,6 +180,12 @@ $('#question-suivante').on('click',(e)=>{
 $('#show-modal-manche2').on('click',(e)=>{
     $("#modal-manche2").modal("show");
     $("#show-modal-manche2").hide();
+})
+
+$('#show-modal-finale').on('click',(e)=>{
+    $("#modal-finale").modal("show");
+    $("#show-modal-finale").hide();
+    hideFinaleQuestions();
 })
 
 function questionSuivante(){
@@ -304,6 +316,15 @@ $("#conquiz-manche2-button").on('click',(e)=>{
     $("#modal-manche2").modal("hide");
 
 })
+$("#finale-visualize").on('click',(e)=>{
+    console.log("visualize finale");
+    questionsfinale = $('#listeFinale').val();
+    if (checkFinale(questionsfinale)){
+        setFinaleQuestions(finaleQuestions);
+        $('#modal-finale').modal("hide");
+    }
+
+});
 
 
 $("#finale-launch").on('click',(e)=>{
@@ -739,8 +760,17 @@ function updateFinaleTimer(){
 
 function setFinaleQuestions(questions){
     for (let i = 1; i <= 10; i++) {
-        $(`#finale-${i}`).text(questions[i-1].question);
+        if (checkImage(questions[i-1].question)){
+            $(`#finale-${i}`).html(`<img src="${questions[i-1].question}" alt="Image question ${i}" style="width:100%; height:100%; object-fit:contain;">`);
+        }
+        else{
+            $(`#finale-${i}`).text(questions[i-1].question);
+        }
     }
+}
+
+function checkImage(question){
+    return /\.(jpe?g|png|gif|bmp|webp|svg)$/i.test(question.trim());
 }
 
 function hideFinaleQuestions(){

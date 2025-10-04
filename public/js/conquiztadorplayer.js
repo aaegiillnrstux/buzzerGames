@@ -490,10 +490,31 @@ function setFinaleQuestions(questions){
             $(`#finale-${i}`).text(questions[i-1].answer);
         }
         else{
+            if (checkImage(questions[i-1].question)){
+                $(`#finale-${i}`).html(`<img src="${questions[i-1].question}" alt="Image question ${i}" style="width:100%; height:100%; object-fit:contain;">`);
+            }
+            else{
+                $(`#finale-${i}`).text(questions[i-1].question);
+            }
+        }
+    }
+}
+
+function setFinaleQuestions(questions){
+    for (let i = 1; i <= 10; i++) {
+        if (checkImage(questions[i-1].question)){
+            $(`#finale-${i}`).html(`<img src="${questions[i-1].question}" alt="Image question ${i}" style="width:100%; height:100%; object-fit:contain;">`);
+        }
+        else{
             $(`#finale-${i}`).text(questions[i-1].question);
         }
     }
 }
+
+function checkImage(question){
+    return /\.(jpe?g|png|gif|bmp|webp|svg)$/i.test(question.trim());
+}
+
 
 function hideFinaleQuestions(){
     for (let i = 1; i <= 10; i++) {

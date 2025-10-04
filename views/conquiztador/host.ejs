@@ -265,6 +265,7 @@
                         <button type="button" class="btn btn-warning" id="Block-finale">Bloquer</button>
                         <button type="button" class="btn btn-success" id="Unblock-finale">Lancer</button>
                         <button type="button" class="btn btn-danger" id="Start-Manche2">Manche 2</button>
+                        <button type="button" class="btn btn-info" id="show-modal-finale">Modal</button>
                         <div class="" id="countdown-finale">
                             0:00
                         </div>
@@ -476,13 +477,14 @@
                                 <input type="text" class="form-control" name="listeFinale" id="listeFinale"
                                     placeholder="Saisir votre finale" required>
                                 <label class="form-check-label" for="conquiz-finale-time">
-                                        Nb de seconde pour la finale </label>
+                                        Nb de secondes pour la finale </label>
                                 <input type="number" name="conquiz-finale-time" id="conquiz-finale-time"
                                         class="form-control" minlength="0" placeholder="Point max" value="60" required>
                                 
                             </div>
                         </div>
                         <div class="modal-footer" id="finale-buttons">
+                            <button class="btn btn-secondary" id="finale-visualize" type="submit">Visualiser</button>
                             <button class="btn btn-primary" id="finale-launch" type="submit">Lancer la finale</button>
                         </div>
                     </div>
