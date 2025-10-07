@@ -48,15 +48,23 @@ $('#btn-start-game').on('click',(e)=>{
     $('#settings-button').hide("slow");
     $('#btn-start-game').hide();
     $('#btn-stop-timer').show();
+    $('#btn-passer').show();
     $('#btn-restart-timer').hide();
 });
 
 $('#btn-stop-timer').on('click',(e)=>{
     stop_timer();
 });
+
+$('#btn-passer').on('click',(e)=>{
+    socket.emit("passer");
+    stop_timer();
+});
+
 function stop_timer(){
     socket.emit("stop timer");
     $('#btn-stop-timer').hide();
+    $('#btn-passer').hide();
     $('#btn-restart-timer').show();
 }
 
@@ -67,6 +75,7 @@ function restart_timer(){
     socket.emit("restart timer");
     $('#btn-restart-timer').hide();
     $('#btn-stop-timer').show();
+    $('#btn-passer').show();
 }
 
 $(function(){
@@ -149,6 +158,12 @@ socket.on("update score",(room)=>{
     });
 });
 
+socket.on("clear orange",()=>{
+    currentRoom.players.forEach((player)=>{
+        $(`#joueur-${player.username}`).css('background-color','');
+    });
+});
+
 socket.on("liberer", (r)=>{
     currentRoom=r;
     liberer();
@@ -202,20 +217,24 @@ socket.on("buzz",(room,username)=>{
 });
 
 socket.on("stop timer", () => {
+    $('#btn-restart-timer').show();
+    $('#btn-stop-timer').hide();
+    $('#btn-passer').hide();
+    $('#validate-answer').hide();
     console.log("stop timer");
     clearInterval(countdown);
 });
 
 socket.on("restart timer", () => {
-    if (countdown){
-        clearInterval(countdown);
-    }
+    clearInterval(countdown);
+     
     console.log("restart timer");
     countdown=setInterval(() => updateCountdown(currentRoom,currentRoom.players), 1000);
 });
 
 socket.on("temps écoulé",(room,username)=>{
     console.log("temps écoulé "+username);
+    socket.emit("passer");
     currentRoom=room;
     stop_timer();
     lowLag.play('/components/times-up.mp3');
@@ -229,8 +248,6 @@ socket.on("remove player",(room)=>{
     if (currentRoom.state.start && countdown){
         clearInterval(countdown);
         socket.emit("stop timer");
-        $('#btn-stop-timer').hide();
-        $('#btn-restart-timer').show();
     }
     var i=1;
     if (1<=room.players.length && room.players.length<=8){

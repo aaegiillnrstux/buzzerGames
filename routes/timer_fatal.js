@@ -260,26 +260,30 @@ export default function routeTimerFatal(io) {
                     var player = r.players.find((player) => { return player.username === username; });
                     if (player) {
                         clearInterval(countdowns[r.id]);
+                        console.log("r: "+JSON.stringify(r));
                         if (isCorrect) {
                             console.log(`[TF ${r.id}] ${player.username} a répondu correctement`);
                             player.timer +=r.state.last_question_time+r.state.time_counter;
- 
+                            player.timer=Math.min(player.timer,r.options.time_start);
                         }
                         else {
                             console.log(`[TF ${r.id}] ${player.username} a répondu faux`);
-                            r.players.forEach((pl)=>{
-                                if (pl.username!==player.username){
-                                    pl.timer+=r.state.last_question_time;
-                                }
-                            }); 
+                            var selected_players=r.players.filter((pl)=>pl.timer>0&&pl.username!==player.username);
+                            selected_players.forEach((pl)=>{
+                                pl.timer+=r.state.last_question_time;
+                                pl.timer=Math.min(pl.timer,r.options.time_start);
+                            });
                         }
                         r.state.time_counter=0;
+                        r.state.last_question_time=0;
+                        TFNamespace.to(p.roomId).emit("clear orange");
                         TFNamespace.to(p.roomId).emit("update score", r);
+                        clearInterval(countdowns[r.id]);
+                        r.state.free = false;
                         r.state.buzzed = false;
-                        r.state.free = true;
-                        TFNamespace.to(p.roomId).emit("liberer", r);
-                        TFNamespace.to(p.roomId).emit("restart timer");
-                        countdowns[r.id] = setInterval(()=>{updateCountdown(r,r.players)},1000);
+                        r.state.blocked = true;
+                        TFNamespace.to(p.roomId).emit("stop timer");
+                        TFNamespace.to(p.roomId).emit("block", r);
                     }
                 }
             } catch (error) {
@@ -321,6 +325,21 @@ export default function routeTimerFatal(io) {
             } catch (error) {
                 console.error("Il y a eu un pb dans TF restart timer : "+error);
                 TFNamespace.to(p.roomId).emit("alert","Erreur pour redémarrer le timer")
+            }
+        });
+
+        socket.on("passer", () => {
+            try {
+                if (p && p.host && r.state.start && r.state.free) {
+                    
+                    r.state.time_counter=0;
+                    r.state.last_question_time=0;
+                    console.log("r: "+JSON.stringify(r));
+                    console.log("Passer demandé");
+                }   
+            } catch (error) {
+                console.error("Il y a eu un pb dans TF passer : "+error);
+                TFNamespace.to(p.roomId).emit("alert","Erreur pour passer la question")
             }
         });
 

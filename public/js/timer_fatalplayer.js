@@ -133,6 +133,12 @@ socket.on("update score",(room)=>{
     });
 });
 
+socket.on("clear orange",()=>{
+    currentRoom.players.forEach((player)=>{
+        $(`#joueur-${player.username}`).css('background-color','');
+    });
+});
+
 socket.on("buzz",(room,username)=>{
     currentRoom=room;
     console.log("[TF] buzz : "+username);
