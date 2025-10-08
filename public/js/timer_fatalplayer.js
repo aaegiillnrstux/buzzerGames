@@ -134,6 +134,7 @@ socket.on("update score",(room)=>{
 });
 
 socket.on("clear orange",()=>{
+    selected_players=currentRoom.players.filter((p)=>p.timer>0);
     currentRoom.players.forEach((player)=>{
         $(`#joueur-${player.username}`).css('background-color','');
     });

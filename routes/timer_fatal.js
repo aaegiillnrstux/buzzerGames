@@ -80,6 +80,7 @@ export default function routeTimerFatal(io) {
                     }
                     if (player.timer<=0){
                         player.timer=0;
+                        room.state.last_question_time=room.state.time_counter;
                         TFNamespace.to(r.id).emit("temps écoulé",room,player.username);
                     }
                 });
@@ -256,7 +257,7 @@ export default function routeTimerFatal(io) {
 
         socket.on("answer", (isCorrect,username) => {
             try {
-                if (p && p.host && r.state.start && r.state.buzzed) {
+                if (p && p.host && r.state.start) {
                     var player = r.players.find((player) => { return player.username === username; });
                     if (player) {
                         clearInterval(countdowns[r.id]);
