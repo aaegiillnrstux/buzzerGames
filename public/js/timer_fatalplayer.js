@@ -228,12 +228,14 @@ function block(){
 }
 
 function buzzed(){
-    socket.emit("buzzed",myplayer.username)
-    myplayer.state="buzzed";
-    $("#buzzer").off('click');
-    $("#buzzer-state").text("Buzzed");
-    $("#buzzer-circle").attr('fill',"red");
-    $(document).off('keydown');
+    if (currentRoom.players.find((p) => p.username === myplayer.username)?.timer > 0) {
+        socket.emit("buzzed",myplayer.username)
+        myplayer.state="buzzed";
+        $("#buzzer").off('click');
+        $("#buzzer-state").text("Buzzed");
+        $("#buzzer-circle").attr('fill',"red");
+        $(document).off('keydown');
+    }
 }
 
 socket.on("disconnect",()=>{

@@ -80,7 +80,7 @@ export default function routeTimerFatal(io) {
                     }
                     if (player.timer<=0){
                         player.timer=0;
-                        room.state.last_question_time=room.state.time_counter;
+                        room.state.last_question_time+=room.state.time_counter;
                         TFNamespace.to(r.id).emit("temps écoulé",room,player.username);
                     }
                 });

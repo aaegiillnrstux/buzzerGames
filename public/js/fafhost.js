@@ -25,6 +25,7 @@ var period=100;
 var step=10*period/roundTime;
 var countdownInterval;
 var boite=4;
+var buzzedPlayer=null;
 
 
 $("#form-pseudo").on('submit', function (e){
@@ -207,10 +208,10 @@ socket.on("FAF start", (room) => {
     currentRoom=room;
 });
 
-socket.on("FAF buzzed", (room)=>{
+socket.on("FAF buzzed", (room,player)=>{
     console.log("buzzed")
+    buzzedPlayer=player;
     currentRoom=room;
-    
     lowLag.play('/components/buzzsound.mp3');
     clearInterval(countdownInterval);
     $('#validate-answer').show();

@@ -75,7 +75,7 @@ export default function (io) {
                 player.points = 0;
                 player.player = true;
                 p = player;
-                r = { players: [], spectateurs: [], id: player.roomId, state: { start: false, pointsRule: [[[4],[2]],[[3],[1]]], main: null, mainInGame: null,buzzed:false},options:{roundTime:20,whitelistEnabled:false,whitelist:[]} };
+                r = { players: [], spectateurs: [], id: player.roomId, state: { start: false, pointsRule: [[[4],[2]],[[3],[1]]], main: null,redomain:false, mainInGame: null,buzzed:false},options:{roundTime:20,whitelistEnabled:false,whitelist:[]} };
                 rooms.push(r);
                 socket.join(p.roomId);
                 console.log(`[Hosting FAF] ${p.username} host la room ` + p.roomId);
@@ -212,6 +212,8 @@ export default function (io) {
                 if (p && p.host&&!r.state.start) {
                     console.log(`[FAF ${r.id}] start `);
                     r.state.start = true;
+                    r.state.startTime = Date.now();
+                    r.state.tempsEcoule=0;
                     fafNamespace.to(p.roomId).emit("FAF start",r);
                     var player = r.players[r.state.main];
                     r.state.mainInGame=r.state.main;
@@ -229,7 +231,9 @@ export default function (io) {
             try{
                 if (p && !p.host&&r.state.start&&!r.state.buzzed&&r.players[r.state.mainInGame].username==player&&r.players[r.state.mainInGame].state=="free") {
                     console.log(`[FAF ${r.id}] ${player} buzzed `);
-                    p.state="blocked";
+                    r.state.tempsEcoule+=Date.now()-r.state.startTime;
+                    r.players[r.state.mainInGame].state="buzzed";
+                    r.players.map((r)=>{if (r.username!=player){r.state="blocked"}});
                     r.state.buzzed=true;
                     fafNamespace.to(p.roomId).emit("FAF buzzed",r,player);
                 }
@@ -250,6 +254,8 @@ export default function (io) {
                     if (answer){
                         player.points+=r.state.pointsRule[r.state.mainInGame][0][0];
                         console.log(`[FAF ${r.id}] ${player.username} a maintenant ${player.points} points`);
+                        r.state.tempsEcoule=0;
+                        r.state.startTime=0;
                         r.state.start = false;
                         r.state.main=null;
                         r.state.mainInGame=null;
@@ -258,6 +264,7 @@ export default function (io) {
                         fafNamespace.to(p.roomId).emit("FAF block",r)
                     }
                     else {
+                        r.state.startTime=Date.now();
                         console.log(` [FAF ${r.id}] ${player.username} a perdu la main`);
                         console.log(JSON.stringify(r.state.pointsRule));
                         if (r.state.pointsRule[1-r.state.mainInGame].length==0){
@@ -299,7 +306,7 @@ export default function (io) {
 
         socket.on("FAF main",(boite)=>{
             try{
-                if (p && p.host&&r.state.start) {
+                if (p && p.host&&r.state.start&&r.players[r.state.mainInGame].state=="free"&&r.state.pointsRule[r.state.mainInGame][0].includes(boite)) {
                     console.log("changement de main",JSON.stringify(r.state.pointsRule));
                     r.state.pointsRule[r.state.mainInGame][0] = r.state.pointsRule[r.state.mainInGame][0].filter(item => item !== boite+1);
                     if (r.state.pointsRule[r.state.mainInGame][0].length==0){
@@ -327,7 +334,10 @@ export default function (io) {
                         console.log(JSON.stringify(r));
                     }
                     console.log("changement de main",JSON.stringify(r.state.pointsRule));
-            }
+                }
+                else if (!r.state.pointsRule[r.state.mainInGame][0].includes(boite)){
+                    r.state.redomain = true;
+                }
             } catch(e){
                 console.error("Il y a eu un pb dans FAF main : "+e);
                 io.in(p.roomID).emit("FAF alert","Erreur lors d'un changement de main")

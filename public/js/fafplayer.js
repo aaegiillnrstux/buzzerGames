@@ -147,8 +147,9 @@ socket.on("FAF free", (r)=>{
 
 socket.on("FAF buzzed", (room,player)=>{
     console.log("buzzed")
+    currentRoom=room;;
     clearInterval(countdownInterval);
-    currentRoom=room;
+
     lowLag.play('/components/buzzsound.mp3');
     if (myplayer.username==player){
         
@@ -161,9 +162,6 @@ socket.on("FAF buzzed", (room,player)=>{
         $("#buzzer-state").text("Bloqué");
         $("#buzzer-circle").attr('fill',"yellow");
     }
-    
-    
-
 })
 
 socket.on("FAF block", (r)=>{

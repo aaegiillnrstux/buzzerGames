@@ -204,8 +204,8 @@ socket.on("buzz",(room,username)=>{
     
     console.log("[TF] buzz : "+username);
 
-    console.log("[TF] buzz : "+username);
     buzzed();
+    $(`#current-timer`).text(convertTime(currentRoom.state.time_counter));
     $(`#joueur-${username}`).css('background-color','orange');
     $('#validate-answer').data("buzzed",username);
     $('#validate-answer').show();
