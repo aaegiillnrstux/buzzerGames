@@ -75,7 +75,7 @@ export default function (io) {
                 player.points = 0;
                 player.player = true;
                 p = player;
-                r = { players: [], spectateurs: [], id: player.roomId, state: { start: false, pointsRule: [[[4],[2]],[[3],[1]]], main: null,redomain:false, mainInGame: null,buzzed:false},options:{roundTime:20,whitelistEnabled:false,whitelist:[]} };
+                r = { players: [], spectateurs: [], id: player.roomId, state: { start: false, pointsRule: [[[4],[2]],[[3],[1]]], main: null, mainInGame: null,buzzed:false},options:{roundTime:20,whitelistEnabled:false,whitelist:[]} };
                 rooms.push(r);
                 socket.join(p.roomId);
                 console.log(`[Hosting FAF] ${p.username} host la room ` + p.roomId);
@@ -170,6 +170,7 @@ export default function (io) {
                 if (p && p.host) {
                     console.log(`[FAF ${r.id}] ${player} a la main `);
                     r.state.main=rang;
+                    r.state.mainInGame=rang;
                     fafNamespace.to(p.roomId).emit("FAF current player", r);
                     if (rang==0){
                         r.state.pointsRule=[[[4],[2]],[[3],[1]]];
@@ -276,7 +277,8 @@ export default function (io) {
                         }
                         console.log(JSON.stringify(r.state.pointsRule));
                         r.state.mainInGame=1-r.state.mainInGame;
-                        
+                        r.players[r.state.mainInGame].state="free";
+                        r.players[1-r.state.mainInGame].state="blocked";
                         fafNamespace.to(p.roomId).emit("FAF switch", r);
                     }
                 }
@@ -306,12 +308,13 @@ export default function (io) {
 
         socket.on("FAF main",(boite)=>{
             try{
-                if (p && p.host&&r.state.start&&r.players[r.state.mainInGame].state=="free"&&r.state.pointsRule[r.state.mainInGame][0].includes(boite)) {
+                if (p && p.host&&r.state.start&&r.players[r.state.mainInGame].state=="free") {
                     console.log("changement de main",JSON.stringify(r.state.pointsRule));
                     r.state.pointsRule[r.state.mainInGame][0] = r.state.pointsRule[r.state.mainInGame][0].filter(item => item !== boite+1);
                     if (r.state.pointsRule[r.state.mainInGame][0].length==0){
                         r.state.pointsRule[r.state.mainInGame].shift();
                         if (r.state.pointsRule[1-r.state.mainInGame][0].includes(boite)){
+                            console.log(` [FAF ${r.id}] ${r.players[r.state.mainInGame].username} a perdu la main car fin de la boite ${boite}`);
                             r.state.mainInGame=1-r.state.mainInGame;
                             r.players[r.state.mainInGame].state="free";
                             r.players[1-r.state.mainInGame].state="blocked";
@@ -333,10 +336,7 @@ export default function (io) {
                         console.log("Un problème imprévu a eu lieu lors du contrôle des boites");
                         console.log(JSON.stringify(r));
                     }
-                    console.log("changement de main",JSON.stringify(r.state.pointsRule));
-                }
-                else if (!r.state.pointsRule[r.state.mainInGame][0].includes(boite)){
-                    r.state.redomain = true;
+                    console.log("Fin changement de main",JSON.stringify(r.state.pointsRule));
                 }
             } catch(e){
                 console.error("Il y a eu un pb dans FAF main : "+e);

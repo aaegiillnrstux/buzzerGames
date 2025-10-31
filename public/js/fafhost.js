@@ -343,8 +343,9 @@ function updateCountdown(){
         }
         else{
             boite--;
-            changeCouleurExterieur(boite+1,false);
             socket.emit("FAF main",boite);
+            changeCouleurExterieur(boite+1,false);
+           
         }
     }
 }
