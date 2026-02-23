@@ -245,6 +245,7 @@ socket.on("temps écoulé",(room,username)=>{
 
 
 socket.on("remove player",(room)=>{
+    console.log("Statut des joueurs avant déconnexion: "+JSON.stringify(currentRoom.players));
     currentRoom=room;
     if (currentRoom.state.start && countdown){
         clearInterval(countdown);

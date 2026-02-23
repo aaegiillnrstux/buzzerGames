@@ -67,7 +67,7 @@ export default function (io) {
 
         socket.once('Conquiz playerDataHost', (player,themesList,barLength) => {
             console.log("Receiving playerDataHost in Conquiz");
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9]+[A-Za-z0-9]*$/.test(player.username)) {
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
                 socket.disconnect();
             }
             else if (!rooms.find((room) => { return player.roomId === room.id; })) {
@@ -89,8 +89,8 @@ export default function (io) {
 
         socket.on('Conquiz playerData', (player) => {
             console.log("Receiving playerData in Conquiz: "+JSON.stringify(player));
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9]+[A-Za-z0-9]*$/.test(player.username)) {
-                ConquiztadorNS.in(player.socketId).emit("Conquiz error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
+                ConquiztadorNS.in(player.socketId).emit("Conquiz error", "Choississez un pseudo qu'avec des caractères alphanumériques (et sans espaces ! =p)");
                 
             }
             else if (!player.roomId) {

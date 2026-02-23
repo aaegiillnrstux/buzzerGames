@@ -65,7 +65,7 @@ export default function (io) {
 
         socket.once('FAFplayerDataHost', (player) => {
             console.log("Receiving playerDataHost in FAF");
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
                 socket.disconnect();
             }
             else if (!rooms.find((room) => { return player.roomId === room.id; })) {
@@ -88,8 +88,8 @@ export default function (io) {
         socket.on('FAFplayerData', (player) => {
             try{
                 console.log("Receiving playerData in FAF: "+JSON.stringify(player));
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                fafNamespace.in(player.socketId).emit("FAF error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
+                fafNamespace.in(player.socketId).emit("FAF error", "Choississez un pseudo qu'avec des caractères alphanumériques (et sans espaces ! =p)");
                 
             }
             else if (!player.roomId) {

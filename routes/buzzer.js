@@ -71,7 +71,7 @@ export default function (io) {
 
         socket.once('playerDataHost', (player) => {
             console.log("Receiving playerDataHost");
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
                 socket.disconnect();
             }
             else if (!rooms.find((room) => { return player.roomId === room.id; })) {
@@ -94,8 +94,8 @@ export default function (io) {
 
         socket.on('playerData', (player) => {
             try{
-                if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                    io.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+                if (!/^[a-z0-9]+$/i.test(player.username)) {
+                    io.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques (et sans espaces ! =p)");
                     
                 }
                 else {

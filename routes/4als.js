@@ -69,7 +69,7 @@ export default function (io) {
 
         socket.once('4ALSplayerDataHost', (player) => {
             console.log("Receiving playerDataHost in 4ALS");
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
                 socket.disconnect();
             }
             else if (!rooms.find((room) => { return player.roomId === room.id; })) {
@@ -88,8 +88,8 @@ export default function (io) {
 
         socket.on('4ALSplayerData', (player) => {
             try{
-                if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                    io.in(player.socketId).emit("4ALS error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+                if (!/^[a-z0-9]+$/i.test(player.username)) {
+                    io.in(player.socketId).emit("4ALS error", "Choississez un pseudo qu'avec des caractères alphanumériques (et sans espaces ! =p)");
                     
                 }
                 else {

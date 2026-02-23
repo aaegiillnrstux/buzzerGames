@@ -89,7 +89,7 @@ export default function routeTimerFatal(io) {
 
         socket.once('playerDataHost', (player) => {
             console.log("Receiving playerDataHost in TF");
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
                 socket.disconnect();
             }
             else if (!rooms.find((room) => { return player.roomId === room.id; })) {
@@ -111,8 +111,8 @@ export default function routeTimerFatal(io) {
         socket.on('playerData', (player) => {
             try{
                 console.log("Receiving playerData in Timer Fatal: "+JSON.stringify(player));
-            if (!/^[A-Za-z0-9]*[A-Za-z0-9\s]+[A-Za-z0-9]*$/.test(player.username)) {
-                TFNamespace.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques");
+            if (!/^[a-z0-9]+$/i.test(player.username)) {
+                TFNamespace.in(player.socketId).emit("error", "Choississez un pseudo qu'avec des caractères alphanumériques (et sans espaces ! =p)");
                 
             }
             else if (!player.roomId) {
@@ -145,7 +145,7 @@ export default function routeTimerFatal(io) {
                         socket.disconnect();
                     }
                     else {
-                        if (r.players.length>=8 || r.state.start){
+                        if (r.players.length>=8){
                             p=null;
                             // player.player = false;
                             // r.spectateurs.push(p);
@@ -355,7 +355,7 @@ export default function routeTimerFatal(io) {
                     if (p.host) {
                         // Si c'est l'hôte qui se déconnecte, arrêter complètement la partie
                         console.log(`Bye bye host ${p.username}`);
-                        TFNamespace.to(p.roomId).emit("host disconnected"); // Émettre un événement spécifique
+                        TFNamespace.to(p.roomId).emit("host disconnected"); 
                         clearInterval(countdowns[r.id]);
                         delete countdowns[r.id];
                         rooms = rooms.filter((room) => room.id !== p.roomId);
