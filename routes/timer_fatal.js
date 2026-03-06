@@ -331,12 +331,12 @@ export default function routeTimerFatal(io) {
 
         socket.on("passer", () => {
             try {
-                if (p && p.host && r.state.start && r.state.free) {
+                if (p && p.host) {
                     
                     r.state.time_counter=0;
                     r.state.last_question_time=0;
-                    console.log("r: "+JSON.stringify(r));
                     console.log("Passer demandé");
+                    TFNamespace.to(p.roomId).emit("clear orange");
                 }   
             } catch (error) {
                 console.error("Il y a eu un pb dans TF passer : "+error);
