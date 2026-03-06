@@ -28,14 +28,14 @@ export default function routeTimerFatal(io) {
                     roomID = Math.floor(Math.random() * 899999) + 100000;
                     listeCodes.push(parseInt(roomID));
                     console.log("[Hosting] room " + roomID);
-                    res.redirect('/apps/timer_fatal/' + roomID);
+                    res.redirect('/apps/chrono_fatal/' + roomID);
                 }
                 else {
                     res.status(403).render('home', { titre: "Accès refusé", root: "../../", title: "Erreur",connected:isAdminRes });
                 }});
         }
         else if (infos.action == 'join') {
-            res.redirect('/apps/timer_fatal/' + infos.code);
+            res.redirect('/apps/chrono_fatal/' + infos.code);
         }
     });
 

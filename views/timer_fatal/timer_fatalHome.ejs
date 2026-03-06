@@ -1,5 +1,5 @@
 <%- include('../partials/header',{root:"../"}); %>
-    <title>Timer Fatal</title>
+    <title>Chrono Fatal</title>
 </head>
 
 <body>
@@ -7,14 +7,14 @@
 
         <div class="card m-4">
             <div class="card-body mx-auto">
-                <h1 class="text-center">Bienvenue sur le Timer Fatal</h1>
-                <p class="text-justify">Vous rêviez de participer au Coup Fatal des 12 Coups? Et bien maintenant, vous pouvez y participer à 8 joueurs!</p>
+                <h1 class="text-center">Bienvenue sur le Chrono Fatal</h1>
+                <p class="text-justify">Jouez à 8 joueurs à ce jeu qui vous mettra sous pression!</p>
                 <div class="card-deck row" >
                     <div class="card mx-auto col-5 " style="padding-right: 0px;padding-left: 0px;">
                         <div class="card-header bg-info"> Rejoindre</div>
 
                         <div class="card-body ">
-                            <form action="/apps/timer_fatal" method="post" class="row g-2">
+                            <form action="/apps/chrono_fatal" method="post" class="row g-2">
                                 <label for="code" class="visually-hidden">Code</label>
                                 <input type="number" class="form-control" name="code" id="code" placeholder="Code" required
                                     min="99999" maxlength="1000000">
@@ -28,7 +28,7 @@
                     <div class="card col-5 mx-auto " style="padding-right: 0px;padding-left: 0px;">
                         <div class="card-header bg-info">Créer</div>
                         <div class="card-body ">
-                            <form action="/apps/timer_fatal" method="post" class="row g-3">
+                            <form action="/apps/chrono_fatal" method="post" class="row g-3">
                                 <input type="hidden" name="action" value="host">
 
                                 <button type="submit" class="btn btn-primary mb-3">Créer</button>

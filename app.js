@@ -61,7 +61,7 @@ app.use('/apps/buzzer',routeBuzzer);
 app.use('/apps/4als',route4als);
 app.use('/apps/faf',routeFaf);
 app.use('/apps/bunka',routeBunka);
-app.use('/apps/timer_fatal',routeTimerFatal);
+app.use('/apps/chrono_fatal',routeTimerFatal);
 // app.use('/centurie',routeCenturie);
 // app.use('/apps/qpuc',routeQPUC);
 app.use('/api',routeLoginAPI);
