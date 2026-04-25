@@ -215,8 +215,6 @@ $('#Vrai-manche2').on('click',(e)=>{
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
         changeKonamiColors(colorGoodAnswer);
     }
-
-    indexReponsesManche2+=1;
     currentPlayer=null;
 })
 
@@ -255,7 +253,9 @@ function questionSuivante(){
             $("#konami-question").text(questionsManche2[indexQuestionsManche2].toUpperCase());
             changeKonamiColors(colorNormal);
         }
+        indexReponsesManche2=indexQuestionsManche2;
         indexQuestionsManche2+=1;
+        
         if (pointMode === "questions") {
             if (indexQuestionsManche2 % rateQuestionManche2 === 1 && currentPoints < pointMaxManche2) {
                 currentPoints++;
