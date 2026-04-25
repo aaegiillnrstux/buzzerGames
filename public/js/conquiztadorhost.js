@@ -9,18 +9,26 @@ var myplayer = {
 
 const socket = io("/conquiztador");
 var questions = [];
+var reponses =[];
 var questionsManche2 = [];
+var reponsesManche2 = [];
 var indexQuestionsManche2 = 0;
+var indexReponsesManche2=0;
 var themesList = [];
 var finaleQuestions = [];
 var reponseEstimation;
 var dateEstimation;
 var timeFinale=60;
 
+var colorGoodAnswer="#005D1F";
+var colorBadAnswer="#BE0033";
+var colorNormal="#4B00A5";
+
 var currentPlayer;
 var currentRoom;
 var currentPoints=1;
 var pointMaxManche2 = 6;
+var rateQuestionManche2=6;
 var rateManche2=60;
 var pointsCountdown;
 var secEcouler=0;
@@ -42,6 +50,31 @@ lowLag.load('/components/Mauvaise_reponse.mp3');
 lowLag.load('/components/Suspense_final.mp3');
 lowLag.load('/components/Presentation_des_3_themes.mp3');
 lowLag.load('/components/Ding.mp3');
+
+const konamiCode = [
+    'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+    'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+    'b', 'a'
+  ];
+var currentQuestion;
+var konamiIndex=0;
+var konamiActive=false;
+$(document).keydown(function(event) {
+    if (event.key === konamiCode[konamiIndex]) {
+        konamiIndex++; // Move to the next position in the sequence
+
+        // If all keys in the sequence have been pressed, execute the code
+        if (konamiIndex === konamiCode.length) {
+            $('body').css('background-color', 'pink'); // Change the background color to pink
+            $('body').css('background-image', 'none'); // Add a background image
+            $('#app-konami-question').show();
+            konamiActive=true;
+            konamiIndex = 0; // Reset the index for future input
+        }
+    } else {
+        konamiIndex = 0; // Reset the index if the key pressed does not match the sequence
+    }
+});
 
 // Mettre son finale et fin de timer
 $("#form-pseudo").on('submit', function (e){
@@ -108,7 +141,8 @@ $('.block').on('click',(e)=>{
         $('#question-div').text(question.question);
         $('#reponse-div').text(question.answer);
         $('#question-div').data("points",(number-1)%3+1 )
-        socket.emit("Conquiz question",question.question,e.target.id,(number-1)%3+1);
+        currentQuestion=question;
+        socket.emit("Conquiz question",question,e.target.id,(number-1)%3+1);
     }
 })
 
@@ -143,16 +177,28 @@ $('#Faux-manche1').on('click',(e)=>{
     if (currentRoom.state.question!=null){
         $(`#${currentRoom.state.questionid}`).addClass("bad-block");
     }
-    
+    if (konamiActive){
+        $("#konami-question").text(currentQuestion.answer.toUpperCase());
+        changeKonamiColors(colorBadAnswer);
+    }
     socket.emit("Conquiz answer",false,$('#question-div').data("points"));
 });
+
+function changeKonamiColors(color_given){
+    $("#konami-question").css("border", `5px solid ${color_given}`);
+    $("#konami-number").css("background-color", color_given);
+    $("#konami-number").css("border", `5px solid ${color_given}`);
+}
 
 $('#Vrai-manche1').on('click',(e)=>{
     lowLag.play('/components/Bonne_reponse.mp3');
     if (currentRoom.state.question!=null){
         $(`#${currentRoom.state.questionid}`).addClass("good-block");
     }
-    
+    if (konamiActive){
+        $("#konami-question").text(currentQuestion.answer.toUpperCase());
+        changeKonamiColors(colorGoodAnswer);
+    }
     socket.emit("Conquiz answer",true,$('#question-div').data("points"));
 });
 
@@ -164,12 +210,26 @@ $('#Suspense-manche1').on('click',(e)=>{
 $('#Vrai-manche2').on('click',(e)=>{
     socket.emit("Conquiz update score",currentPlayer,currentPoints.toString());
     liberer();
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],true);
+    if (konamiActive){
+        $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
+        changeKonamiColors(colorGoodAnswer);
+    }
+
+    indexReponsesManche2+=1;
     currentPlayer=null;
 })
 
 $('#Faux-manche2').on('click',(e)=>{
     socket.emit("Conquiz update score",currentPlayer,(-currentPoints).toString());
     liberer();
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],false);
+    if (konamiActive){
+        $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
+        changeKonamiColors(colorBadAnswer);
+    }
+    
+    indexReponsesManche2+=1;
     currentPlayer=null;
 })
 
@@ -191,15 +251,22 @@ $('#show-modal-finale').on('click',(e)=>{
 function questionSuivante(){
     if (indexQuestionsManche2<questionsManche2.length){
         socket.emit("Conquiz question manche2",questionsManche2[indexQuestionsManche2]);
+        if (konamiActive){
+            $("#konami-question").text(questionsManche2[indexQuestionsManche2].toUpperCase());
+            changeKonamiColors(colorNormal);
+        }
         indexQuestionsManche2+=1;
         if (pointMode === "questions") {
-            if (indexQuestionsManche2 % 6 === 1 && currentPoints < pointMaxManche2) {
+            if (indexQuestionsManche2 % rateQuestionManche2 === 1 && currentPoints < pointMaxManche2) {
                 currentPoints++;
                 $("#success-alert").html(`<strong>Nous passons à ${currentPoints} points !</strong>`);
                 $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
                     $("#success-alert").slideUp(500);
                 });
                 socket.emit("Conquiz update currentPoints", currentPoints);
+                if (konamiActive){
+                    $("#konami-number-number").text(currentPoints);
+                }
             }
         }
     }
@@ -232,6 +299,9 @@ $('#Start-Manche2').on('click',(e)=>{
     if (currentRoom.players.length==2){
         socket.emit("Conquiz start manche2");
         $("#show-modal-manche2").show();
+        if (konamiActive){
+            $("#konami-number-number").text(1);
+            }
     }
 });
 
@@ -288,30 +358,38 @@ socket.on("Conquiz unblock finale",(r)=>{
     timerFinale=setInterval(updateFinaleTimer,1000);
 })
 const takeEveryTwo = (arr) => arr.filter((item, index) => (index % 2) === 0);
+const takeAnswers = (arr) => arr.filter((item,index)=> (index %2)==1);
 
 $("#conquiz-manche2-button").on('click',(e)=>{
     pointMode = $("#conquiz-mode-select").val();
     if ($('#conquiz-pointmax').val()){
         pointMaxManche2=$('#conquiz-pointmax').val();
     }
-    if ($("#conquiz-rate").val()){
-        rateManche2=$("#conquiz-rate").val();
-    }
+
     if ($("#conquiz-questions").val()){
         questionsManche2 = $("#conquiz-questions").val().split("\n");
+        reponsesManche2 = takeAnswers(questionsManche2);
         questionsManche2 = takeEveryTwo(questionsManche2);
     }
     currentPoints=0;
     if (pointMode === "time") {
+        if ($("#conquiz-rate").val()){
+            rateManche2=$("#conquiz-rate").val();
+            }
         pointsCountdown = setInterval(updatePoints, 1000);
         dateEstimation = new Date().getTime();
         currentPoints=1;
+    }
+    else if (pointMode === "questions") {
+        if ($("#conquiz-rate").val()){
+            rateQuestionManche2=$("#conquiz-rate").val();
+        }
     }
     timerManche2=setInterval(updateTimer,100);
     dateEstimation=new Date().getTime();
     secEcouler=0;
     indexQuestionsManche2=0;
-    
+    indexReponsesManche2=0;
     liberer();
     $("#modal-manche2").modal("hide");
 
@@ -519,8 +597,13 @@ socket.on("Conquiz remove current player", (room) => {
     currentPlayer=null;
 });
 
-socket.on("Conquiz question",(room,question)=>{
+socket.on("Conquiz question",(room,question,points)=>{
     currentRoom=room;
+    if (konamiActive){
+        $("#konami-question").text(question.question.toUpperCase());
+        $("#konami-number-number").text(points);
+        changeKonamiColors(colorNormal);
+    }
 })
 
 socket.on("Conquiz buzzed", (room,rang)=>{
@@ -694,6 +777,10 @@ function updatePoints(){
             $("#success-alert").slideUp(500);
         });
         socket.emit("Conquiz update currentPoints",currentPoints);
+        if (konamiActive){
+            $("#konami-number-number").text(currentPoints);
+        }
+
     }
 }
 
@@ -743,7 +830,7 @@ function extractNumberFromPercent(percent){
 
 function updateTimer(){
     secEcouler=Math.floor((new Date().getTime()-dateEstimation)/1000);
-    $('#countdown-manche2').text(`${Math.floor(secEcouler/60)}:${secEcouler%60}   nbQuestions: ${indexQuestionsManche2}   Points: ${currentPoints}`);
+    $('#countdown-manche2').text(`${Math.floor(secEcouler/60)}:${secEcouler%60}   nbQuestions: ${indexQuestionsManche2} nbReponses: ${indexReponsesManche2}  Points: ${currentPoints}`);
 }
 
 function updateFinaleTimer(){

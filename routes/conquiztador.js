@@ -225,7 +225,7 @@ export default function (io) {
 
         socket.on("Conquiz question", (question,id,points) => {
             if (p && p.host) {
-                console.log(`[Conquiz ${r.id}] ${question}`);
+                console.log(`[Conquiz ${r.id}] ${question.question}`);
                 r.state.questionid=id;
                 r.state.question=question;
                 ConquiztadorNS.to(p.roomId).emit("Conquiz question",r,question,points);
@@ -237,6 +237,13 @@ export default function (io) {
                 console.log(`[Conquiz ${r.id}] ${question}`);
                 r.state.question=question;
                 ConquiztadorNS.to(p.roomId).emit("Conquiz question manche2",r,question);
+            }
+        });
+
+        socket.on("Conquiz reponses manche2", (reponse, bool_reponse)=> {
+            if (p && p.host) {
+                console.log(`[Conquiz ${r.id}] reponse manche2 : ${reponse} (${bool_reponse})`);
+                ConquiztadorNS.to(p.roomId).emit("Conquiz reponses manche2",reponse,bool_reponse);
             }
         });
 

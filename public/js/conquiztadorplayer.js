@@ -11,10 +11,15 @@ var myplayer = {
 
 const socket = io("/conquiztador");
 
+var currentQuestion;
 var currentRoom;
 var currentPlayer;
 var tempsMovement=1;
 var nbPas=50;
+
+var colorGoodAnswer="#005D1F";
+var colorBadAnswer="#BE0033";
+var colorNormal="#4B00A5";
 
 const konamiCode = [
     'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
@@ -50,6 +55,12 @@ lowLag.load('/components/Mauvaise_reponse.mp3');
 lowLag.load('/components/Presentation_des_3_themes.mp3');
 lowLag.load('/components/Suspense_final.mp3');
 lowLag.load('/components/Ding.mp3');
+
+function changeKonamiColors(color_given){
+    $("#konami-question").css("border", `5px solid ${color_given}`);
+    $("#konami-number").css("background-color", color_given);
+    $("#konami-number").css("border", `5px solid ${color_given}`);
+}
 
 
 $("#form-pseudo").on('submit', function (e){
@@ -192,12 +203,16 @@ socket.on("Conquiz couleurs",(room)=>{
 
 socket.on("Conquiz question", (room,question,points) => {
     currentRoom=room;
+    currentQuestion=question;
+
     if (!konamiActive){
-        afficherQuestion(question);
+        afficherQuestion(question.question);
+        
     }
     else{
-        $("#konami-question").text(question.toUpperCase());
+        $("#konami-question").text(question.question.toUpperCase());
         $("#konami-number-number").text(points);
+        changeKonamiColors(colorNormal);
     }
     
 })
@@ -206,15 +221,37 @@ socket.on("Conquiz question manche2", (room,question) => {
     currentRoom=room;
     if (konamiActive){
         $("#konami-question").text(question.toUpperCase());
+        changeKonamiColors(colorNormal);
     }
 })
+
+socket.on("Conquiz reponses manche2", (reponse,bool_reponse) => {
+    if (konamiActive){
+        $("#konami-question").text(reponse.toUpperCase());
+        if (bool_reponse){
+            
+            changeKonamiColors(colorGoodAnswer);
+        }
+        else{
+            changeKonamiColors(colorBadAnswer);
+        }
+    }
+});
 
 socket.on("Conquiz remove question", (bool,r) => {
     if (bool){
         $(`#${currentRoom.state.questionid}`).addClass("good-block");
+        if (konamiActive){
+            $("#konami-question").text(currentQuestion.answer.toUpperCase());
+            changeKonamiColors(colorGoodAnswer);
+    }
     }
     else{
-        $(`#${currentRoom.state.questionid}`).addClass("bad-block");
+        if (konamiActive){
+            $(`#${currentRoom.state.questionid}`).addClass("bad-block");
+            $("#konami-question").text(currentQuestion.answer.toUpperCase());
+            changeKonamiColors(colorBadAnswer);
+            }
     }
     currentRoom=r;
     console.log("remove question");
