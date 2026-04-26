@@ -211,7 +211,7 @@ $('#Suspense-manche1').on('click',(e)=>{
 $('#Vrai-manche2').on('click',(e)=>{
     socket.emit("Conquiz update score",currentPlayer,currentPoints.toString());
     liberer();
-    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],true);
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],colorGoodAnswer);
     if (konamiActive){
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
         changeKonamiColors(colorGoodAnswer);
@@ -222,7 +222,7 @@ $('#Vrai-manche2').on('click',(e)=>{
 $('#Faux-manche2').on('click',(e)=>{
     socket.emit("Conquiz update score",currentPlayer,(-currentPoints).toString());
     liberer();
-    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],false);
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],colorBadAnswer);
     if (konamiActive){
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
         changeKonamiColors(colorBadAnswer);
@@ -238,10 +238,10 @@ $('#question-suivante').on('click',(e)=>{
 
 $('#reponse-suivante').on('click',(e)=>{
     if (konamiActive){
-        $("#konami-question").text(reponsesManche2[indexQuestionsManche2].toUpperCase());    
-        changeKonamiColors(colorBadAnswer);
+        $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());    
+        changeKonamiColors(colorNormal);
     }
-    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],false);
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],colorNormal);
     
 })
 

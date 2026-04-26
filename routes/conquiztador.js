@@ -240,10 +240,10 @@ export default function (io) {
             }
         });
 
-        socket.on("Conquiz reponses manche2", (reponse, bool_reponse)=> {
+        socket.on("Conquiz reponses manche2", (reponse, color)=> {
             if (p && p.host) {
-                console.log(`[Conquiz ${r.id}] reponse manche2 : ${reponse} (${bool_reponse})`);
-                ConquiztadorNS.to(p.roomId).emit("Conquiz reponses manche2",reponse,bool_reponse);
+                console.log(`[Conquiz ${r.id}] reponse manche2 : ${reponse} (${color})`);
+                ConquiztadorNS.to(p.roomId).emit("Conquiz reponses manche2",reponse,color);
             }
         });
 

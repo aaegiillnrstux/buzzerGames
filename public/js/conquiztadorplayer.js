@@ -226,16 +226,10 @@ socket.on("Conquiz question manche2", (room,question) => {
     }
 })
 
-socket.on("Conquiz reponses manche2", (reponse,bool_reponse) => {
+socket.on("Conquiz reponses manche2", (reponse,color) => {
     if (konamiActive){
         $("#konami-question").text(reponse.toUpperCase());
-        if (bool_reponse){
-            
-            changeKonamiColors(colorGoodAnswer);
-        }
-        else{
-            changeKonamiColors(colorBadAnswer);
-        }
+        changeKonamiColors(color);
     }
 });
 
