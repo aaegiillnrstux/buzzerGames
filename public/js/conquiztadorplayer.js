@@ -58,6 +58,7 @@ lowLag.load('/components/Ding.mp3');
 
 function changeKonamiColors(color_given){
     $("#konami-question").css("border", `5px solid ${color_given}`);
+    $("#konami-question").css("color", color_given);
     $("#konami-number").css("background-color", color_given);
     $("#konami-number").css("border", `5px solid ${color_given}`);
 }

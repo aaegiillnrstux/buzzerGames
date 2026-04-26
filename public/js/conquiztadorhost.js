@@ -186,6 +186,7 @@ $('#Faux-manche1').on('click',(e)=>{
 
 function changeKonamiColors(color_given){
     $("#konami-question").css("border", `5px solid ${color_given}`);
+    $("#konami-question").css("color", color_given);
     $("#konami-number").css("background-color", color_given);
     $("#konami-number").css("border", `5px solid ${color_given}`);
 }
@@ -233,6 +234,15 @@ $('#Faux-manche2').on('click',(e)=>{
 
 $('#question-suivante').on('click',(e)=>{
     questionSuivante()
+})
+
+$('#reponse-suivante').on('click',(e)=>{
+    if (konamiActive){
+        $("#konami-question").text(reponsesManche2[indexQuestionsManche2].toUpperCase());    
+        changeKonamiColors(colorBadAnswer);
+    }
+    socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],false);
+    
 })
 
 $('#show-modal-manche2').on('click',(e)=>{
