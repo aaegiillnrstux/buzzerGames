@@ -180,6 +180,7 @@ $('#Faux-manche1').on('click',(e)=>{
     if (konamiActive){
         $("#konami-question").text(currentQuestion.answer.toUpperCase());
         changeKonamiColors(colorBadAnswer);
+        $("#konami-question").css("font-size", "450%")
     }
     socket.emit("Conquiz answer",false,$('#question-div').data("points"));
 });
@@ -199,6 +200,7 @@ $('#Vrai-manche1').on('click',(e)=>{
     if (konamiActive){
         $("#konami-question").text(currentQuestion.answer.toUpperCase());
         changeKonamiColors(colorGoodAnswer);
+        $("#konami-question").css("font-size", "450%")
     }
     socket.emit("Conquiz answer",true,$('#question-div').data("points"));
 });
@@ -215,6 +217,7 @@ $('#Vrai-manche2').on('click',(e)=>{
     if (konamiActive){
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
         changeKonamiColors(colorGoodAnswer);
+        $("#konami-question").css("font-size", "450%");
     }
     currentPlayer=null;
 })
@@ -226,6 +229,7 @@ $('#Faux-manche2').on('click',(e)=>{
     if (konamiActive){
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());
         changeKonamiColors(colorBadAnswer);
+        $("#konami-question").css("font-size", "450%");
     }
     
     indexReponsesManche2+=1;
@@ -240,6 +244,7 @@ $('#reponse-suivante').on('click',(e)=>{
     if (konamiActive){
         $("#konami-question").text(reponsesManche2[indexReponsesManche2].toUpperCase());    
         changeKonamiColors(colorNormal);
+        $("#konami-question").css("font-size", "450%");
     }
     socket.emit("Conquiz reponses manche2",reponsesManche2[indexReponsesManche2],colorNormal);
     
@@ -262,6 +267,7 @@ function questionSuivante(){
         if (konamiActive){
             $("#konami-question").text(questionsManche2[indexQuestionsManche2].toUpperCase());
             changeKonamiColors(colorNormal);
+            $("#konami-question").css("font-size", "270%");
         }
         indexReponsesManche2=indexQuestionsManche2;
         indexQuestionsManche2+=1;
@@ -613,6 +619,7 @@ socket.on("Conquiz question",(room,question,points)=>{
         $("#konami-question").text(question.question.toUpperCase());
         $("#konami-number-number").text(points);
         changeKonamiColors(colorNormal);
+        $("#konami-question").css("font-size", "270%");
     }
 })
 

@@ -214,6 +214,7 @@ socket.on("Conquiz question", (room,question,points) => {
         $("#konami-question").text(question.question.toUpperCase());
         $("#konami-number-number").text(points);
         changeKonamiColors(colorNormal);
+        $("#konami-question").css("font-size", "270%");
     }
     
 })
@@ -223,6 +224,7 @@ socket.on("Conquiz question manche2", (room,question) => {
     if (konamiActive){
         $("#konami-question").text(question.toUpperCase());
         changeKonamiColors(colorNormal);
+        $("#konami-question").css("font-size", "270%");
     }
 })
 
@@ -230,6 +232,7 @@ socket.on("Conquiz reponses manche2", (reponse,color) => {
     if (konamiActive){
         $("#konami-question").text(reponse.toUpperCase());
         changeKonamiColors(color);
+        $("#konami-question").css("font-size", "450%");
     }
 });
 
@@ -239,6 +242,7 @@ socket.on("Conquiz remove question", (bool,r) => {
         if (konamiActive){
             $("#konami-question").text(currentQuestion.answer.toUpperCase());
             changeKonamiColors(colorGoodAnswer);
+            $("#konami-question").css("font-size", "450%");
     }
     }
     else{
@@ -246,6 +250,7 @@ socket.on("Conquiz remove question", (bool,r) => {
             $(`#${currentRoom.state.questionid}`).addClass("bad-block");
             $("#konami-question").text(currentQuestion.answer.toUpperCase());
             changeKonamiColors(colorBadAnswer);
+            $("#konami-question").css("font-size", "450%");
             }
     }
     currentRoom=r;
