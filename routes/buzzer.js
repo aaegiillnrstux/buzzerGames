@@ -24,7 +24,7 @@ export default function (io) {
         let roomID = 0;
         if (infos.action == "host") {
             isAdmin(req, res, (isAdminRes) => {
-                if (!isAdminRes) {
+                if (false) {
                     res.status(403).render('home', { titre: "Accès refusé", root: "../../", title: "Erreur",connected:isAdminRes });
                 }
                 else {

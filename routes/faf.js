@@ -24,7 +24,7 @@ export default function (io) {
         let roomID = 0;
         if (infos.action == "host") {  
             isAdmin(req, res, (isAdminRes) => {
-                if (isAdminRes) {
+                if (true) {
                     roomID = Math.floor(Math.random() * 899999) + 100000;
                     listeCodes.push(parseInt(roomID));
                     console.log("[Hosting] room " + roomID);
