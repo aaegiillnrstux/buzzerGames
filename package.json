@@ -1,10 +1,11 @@
 {
   "name": "buzzergames",
   "version": "1.0.0",
-  "description": "I tried to make a website that is focus on games about buzzers",
+  "description": "I am trying to build a website focused on buzzer games for the trivia community.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
     "start": "node app.js"
   },
   "type": "module",

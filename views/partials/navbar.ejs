@@ -1,50 +1,62 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Trivia Games</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Accueil</a>
-                </li>
-                <!-- <li class="nav-item">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Trivia Games</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <!-- <li class="nav-item">
                     <a class="nav-link" href="/centurie">Centurie</a>
                 </li> -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Jeux
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="/apps/buzzer">Buzzer</a></li>
-                        <li><a class="dropdown-item" href="/apps/4als">4ALS</a></li>
-                        <li><a class="dropdown-item" href="/apps/faf">Face à face</a></li>
-                        <li><a class="dropdown-item" href="/apps/bunka">Bunka</a></li>
-                        <li><a class="dropdown-item" href="/apps/chrono_fatal">Chrono Fatal</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="navbar-nav" style="margin-left: auto;">
-                <% if (!connected) { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/apps/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/apps/register">Register</a>
-                </li>
-                <% } else { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profil">Profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/apps/logout">Logout</a>
-                </li>
-                <% } %>
-            </ul>
-        </div>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Jeux
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="/apps/buzzer">Buzzer</a></li>
+            <li><a class="dropdown-item" href="/apps/4als">4ALS</a></li>
+            <li><a class="dropdown-item" href="/apps/faf">Face à face</a></li>
+            <li><a class="dropdown-item" href="/apps/bunka">Bunka</a></li>
+            <li><a class="dropdown-item" href="/apps/chrono_fatal">Chrono Fatal</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="navbar-nav" style="margin-left: auto">
+        <% if (!connected) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/apps/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/apps/register">Register</a>
+        </li>
+        <% } else { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/profil">Profil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/apps/logout">Logout</a>
+        </li>
+        <% } %>
+      </ul>
     </div>
+  </div>
 </nav>

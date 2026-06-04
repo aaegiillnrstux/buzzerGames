@@ -1,14 +1,14 @@
 .block {
-    border: 1px solid #000;
-    padding: 20px;
-    text-align: center;
-    background-color: #f0f0f0;
-  }
-  
+  border: 1px solid #000;
+  padding: 20px;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
 .block:hover {
-    background-color: #e0e0e0;
-    color:#000;
-  }
+  background-color: #e0e0e0;
+  color: #000;
+}
 
 .good-block {
   background-color: #3aeb30;
@@ -19,44 +19,44 @@
 }
 
 .used-block {
-    border: 1px solid #000;
-    padding: 20px;
-    text-align: center;
-    position: relative;
-  }
-  
+  border: 1px solid #000;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
 .used-block::before,
 .used-block::after {
-    content: '';
-    position: absolute;
-    background-color: red;
-  }
-  
+  content: '';
+  position: absolute;
+  background-color: red;
+}
+
 .used-block::before {
-    height: 2px;
-    width: 100%;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-  }
-  
+  height: 2px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
 .used-block::after {
-    width: 2px;
-    height: 100%;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+  width: 2px;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
 .case-finale {
   border-radius: 20px; /* Soft corners */
   height: 150px; /* Large size */
   margin: 5px; /* Adjust spacing between boxes */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(to bottom, white, #A89EE4);
+  background: linear-gradient(to bottom, white, #a89ee4);
   background-color: #090097; /* Dark blue background */
-  border: 5px solid #4B00A5; /* Purple border */
-  color: #21007F;
+  border: 5px solid #4b00a5; /* Purple border */
+  color: #21007f;
   font-size: clamp(12px, 4vw, 24px); /* Responsive font size */
   display: flex;
   justify-content: center;
@@ -73,11 +73,11 @@
 }
 
 .theme {
-    transition: visibility 0.5s ease; /* Add smooth transition for the visibility property */
+  transition: visibility 0.5s ease; /* Add smooth transition for the visibility property */
 }
 
 body {
-  background-image: url("../components/carte.jpeg");
+  background-image: url('../components/carte.jpeg');
   background-size: cover;
 }
 
@@ -102,25 +102,24 @@ body {
 #konami-number {
   font-family: 'Maiandra GD', sans-serif;
   color: white;
-  background-color: #4B00A5;
+  background-color: #4b00a5;
   padding: 0% 3%;
-  border: 5px solid #4B00A5; /* Purple border */
+  border: 5px solid #4b00a5; /* Purple border */
   border-radius: 15px;
   font-size: 300%; /* Adjust as necessary */
   text-align: center;
   margin-bottom: -10px; /* Adjust this to stick the blocks together */
   position: relative;
-  line-height:115%;
-
+  line-height: 115%;
 }
 
 #konami-question {
-  background: linear-gradient(to bottom, white, #A89EE4);
-  color: #21007F;
+  background: linear-gradient(to bottom, white, #a89ee4);
+  color: #21007f;
   font-family: 'Maiandra GD', sans-serif;
   background-color: #090097; /* Dark blue background */
   padding: 0.7%;
-  border: 5px solid #4B00A5; /* Purple border */
+  border: 5px solid #4b00a5; /* Purple border */
   border-radius: 10px;
   font-size: 270%; /* Adjust as necessary */
   text-align: center;

@@ -1,46 +1,57 @@
-<%- include('../partials/header',{root:"../"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../"}); %>
     <title>Buzzer</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <%- include('../partials/navbarlow'); %>
 
-        <div class="card m-4">
-            <div class="card-body mx-auto">
-                <h1 class="text-center">Bienvenue sur 4 à la suite</h1>
-                <p class="text-justify">C'est une petite application qui vous permettra d'avoir un simple système pour le 4 à la suite. Vous pouvez rejoindre une partie si vous avez le code ou bien créer une partie en tant que
-                    host</p>
-                <div class="card-deck row" >
-                    <div class="card mx-auto col-5 " style="padding-right: 0px;padding-left: 0px;">
-                        <div class="card-header bg-info"> Rejoindre</div>
+    <div class="card m-4">
+      <div class="card-body mx-auto">
+        <h1 class="text-center">Bienvenue sur 4 à la suite</h1>
+        <p class="text-justify">
+          C'est une petite application qui vous permettra d'avoir un simple système pour le 4 à la suite. Vous pouvez
+          rejoindre une partie si vous avez le code ou bien créer une partie en tant que host
+        </p>
+        <div class="card-deck row">
+          <div class="card mx-auto col-5" style="padding-right: 0px; padding-left: 0px">
+            <div class="card-header bg-info">Rejoindre</div>
 
-                        <div class="card-body ">
-                            <form action="/apps/4als" method="post" class="row g-2">
-                                <label for="code" class="visually-hidden">Code</label>
-                                <input type="number" class="form-control" name="code" id="code" placeholder="Code" required
-                                    min="99999" maxlength="1000000">
-                                <input type="hidden" name="action" value="join">
-                                <button type="submit" class="btn btn-primary mb-3">Rejoindre</button>
-
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-2"></div>
-                    <div class="card col-5 mx-auto " style="padding-right: 0px;padding-left: 0px;">
-                        <div class="card-header bg-info">Créer</div>
-                        <div class="card-body ">
-                            <form action="/apps/4als" method="post" class="row g-3">
-                                <input type="hidden" name="action" value="host">
-
-                                <button type="submit" class="btn btn-primary mb-3">Créer</button>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="card-body">
+              <form action="/apps/4als" method="post" class="row g-2">
+                <label for="code" class="visually-hidden">Code</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="code"
+                  id="code"
+                  placeholder="Code"
+                  required
+                  min="99999"
+                  maxlength="1000000"
+                />
+                <input type="hidden" name="action" value="join" />
+                <button type="submit" class="btn btn-primary mb-3">Rejoindre</button>
+              </form>
             </div>
-        </div>
+          </div>
+          <div class="col-2"></div>
+          <div class="card col-5 mx-auto" style="padding-right: 0px; padding-left: 0px">
+            <div class="card-header bg-info">Créer</div>
+            <div class="card-body">
+              <form action="/apps/4als" method="post" class="row g-3">
+                <input type="hidden" name="action" value="host" />
 
-        <%- include('../partials/script'); %>
-</body>
+                <button type="submit" class="btn btn-primary mb-3">Créer</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/script'); %>
+  </body>
+</html>

@@ -1,88 +1,88 @@
-<%- include('../partials/header',{root:"../"}); %>
-  <title>Dashboard</title>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../"}); %>
+    <title>Dashboard</title>
   </head>
 
   <body>
     <%- include('../partials/centurieNavbar',{connected:connected,admin:admin}); %>
 
-      <div class="container text-center">
-        <h1>Redaction</h1>
-        <div class="row">
-          <div class="col d-flex align-items-center">
-            <select class="form-select" aria-label="Default select example" id="questionnaireSelect">
-              <option selected>Choisissez un questionnaire</option>
-            </select>
-            <button type="button" class="btn btn-primary" onclick="editQuestionnaire()">Editer le questionnaire</button>
-          </div>
-          <div class="col mt-3">
-            <p>OU</p>
-          </div>
-          <div class="col d-flex align-items-center">
-            <input type="text" class="form-control me-2" id="questionnaireName" placeholder="Nom du questionnaire">
-            <button type="button" class="btn btn-primary" onclick="createQuestionnaire()">Créer un
-              questionnaire</button>
-          </div>
+    <div class="container text-center">
+      <h1>Redaction</h1>
+      <div class="row">
+        <div class="col d-flex align-items-center">
+          <select class="form-select" aria-label="Default select example" id="questionnaireSelect">
+            <option selected>Choisissez un questionnaire</option>
+          </select>
+          <button type="button" class="btn btn-primary" onclick="editQuestionnaire()">Editer le questionnaire</button>
         </div>
-        <hr>
-        <div class="row">
-          <div class="col-8">
-            <div class="card">
-              <form id="questionForm" style="display:none;">
-                <div class="form-group">
-                  <label for="question">Question</label>
-                  <input type="text" class="form-control" id="question" name="question" required>
-                </div>
-                <div class="form-group">
-                  <label for="subtitleQuestion">Sous-titre</label>
-                  <input type="text" class="form-control" id="subtitleQuestion" name="subtitleQuestion">
-                </div>
-                <div class="form-group">
-                  <label for="tags">Tags (séparer par des ;)</label>
-                  <input type="text" class="form-control" id="tags" name="tags">
-                </div>
-                <div class="form-group">
-                  <label for="answers">Réponse (séparer par des ;)</label>
-                  <input type="text" class="form-control" id="answers" name="answers" required>
-                </div>
-                <div class="form-group">
-                  <label for="themeSelect">Thème</label>
-                  <select class="form-select" name="themeSelect" id="themeSelect">
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Create/Edit Question</button>
-              </form>
-
-              <form id="themeForm" style="display:none;">
-                <div class="form-group">
-                  <label for="themeTitle">Theme</label>
-                  <input type="text" class="form-control" id="themeTitle" name="themeTitle" required>
-                </div>
-                <div class="form-group">
-                  <label for="themeSubtitle">Sous-titre</label>
-                  <input type="text" class="form-control" id="themeSubtitle" name="themeSubtitle">
-                </div>
-                <button type="submit" class="btn btn-primary">Create/Edit Theme</button>
-              </form>
-
-              <form id="questionnaireForm">
-                <div class="form-group">
-                  <label for="questionnaireTitle">Questionnaire</label>
-                  <input type="text" class="form-control" id="questionnaireTitle" name="questionnaireTitle" required>
-                </div>
-                <div class="form-group">
-                  <label for="themeSubtitle">Sous-titre</label>
-                  <input type="text" class="form-control" id="questionnaireSubtitle" name="questionnaireSubtitle">
-                </div>
-                <button type="submit" class="btn btn-primary">Edit Questionnaire</button>
-              </form>
-            </div>
-          </div>
-          <div class="col-4" id="template">
-
-          </div>
+        <div class="col mt-3">
+          <p>OU</p>
+        </div>
+        <div class="col d-flex align-items-center">
+          <input type="text" class="form-control me-2" id="questionnaireName" placeholder="Nom du questionnaire" />
+          <button type="button" class="btn btn-primary" onclick="createQuestionnaire()">Créer un questionnaire</button>
         </div>
       </div>
+      <hr />
+      <div class="row">
+        <div class="col-8">
+          <div class="card">
+            <form id="questionForm" style="display: none">
+              <div class="form-group">
+                <label for="question">Question</label>
+                <input type="text" class="form-control" id="question" name="question" required />
+              </div>
+              <div class="form-group">
+                <label for="subtitleQuestion">Sous-titre</label>
+                <input type="text" class="form-control" id="subtitleQuestion" name="subtitleQuestion" />
+              </div>
+              <div class="form-group">
+                <label for="tags">Tags (séparer par des ;)</label>
+                <input type="text" class="form-control" id="tags" name="tags" />
+              </div>
+              <div class="form-group">
+                <label for="answers">Réponse (séparer par des ;)</label>
+                <input type="text" class="form-control" id="answers" name="answers" required />
+              </div>
+              <div class="form-group">
+                <label for="themeSelect">Thème</label>
+                <select class="form-select" name="themeSelect" id="themeSelect"></select>
+              </div>
+              <button type="submit" class="btn btn-primary">Create/Edit Question</button>
+            </form>
 
-      <%- include('../partials/script'); %>
-        <script src="../js/redaction.js"></script>
+            <form id="themeForm" style="display: none">
+              <div class="form-group">
+                <label for="themeTitle">Theme</label>
+                <input type="text" class="form-control" id="themeTitle" name="themeTitle" required />
+              </div>
+              <div class="form-group">
+                <label for="themeSubtitle">Sous-titre</label>
+                <input type="text" class="form-control" id="themeSubtitle" name="themeSubtitle" />
+              </div>
+              <button type="submit" class="btn btn-primary">Create/Edit Theme</button>
+            </form>
+
+            <form id="questionnaireForm">
+              <div class="form-group">
+                <label for="questionnaireTitle">Questionnaire</label>
+                <input type="text" class="form-control" id="questionnaireTitle" name="questionnaireTitle" required />
+              </div>
+              <div class="form-group">
+                <label for="themeSubtitle">Sous-titre</label>
+                <input type="text" class="form-control" id="questionnaireSubtitle" name="questionnaireSubtitle" />
+              </div>
+              <button type="submit" class="btn btn-primary">Edit Questionnaire</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-4" id="template"></div>
+      </div>
+    </div>
+
+    <%- include('../partials/script'); %>
+    <script src="../js/redaction.js"></script>
   </body>
+</html>

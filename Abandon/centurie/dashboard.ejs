@@ -1,11 +1,14 @@
-<%- include('../partials/header',{root:"../"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../"}); %>
     <title>Dashboard</title>
-</head>
+  </head>
 
-<body>
-  <%- include('../partials/centurieNavbar',{connected:connected,admin:admin}); %>
-  <div class="row">
-    <div class="card col-4">
+  <body>
+    <%- include('../partials/centurieNavbar',{connected:connected,admin:admin}); %>
+    <div class="row">
+      <div class="card col-4">
         <div class="card-body">
           <h5 class="card-title">nouveau post</h5>
           <p class="card-text">Faire la pub d'un nouveau défi</p>
@@ -20,5 +23,6 @@
         </div>
       </div>
     </div>
-      <%- include('../partials/script'); %>
-</body>
+    <%- include('../partials/script'); %>
+  </body>
+</html>

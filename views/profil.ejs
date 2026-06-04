@@ -1,52 +1,62 @@
-<%- include('./partials/header',{root:"./"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('./partials/header',{root:"./"}); %>
     <title>Profil</title>
-    </head>
+  </head>
 
-    <body>
-        <%- include('./partials/navbar',{connected:connected,admin:admin}); %>
-            <h1 class="p-2 text-center" >Profil</h1>
-            <div class="card ">
-                <h4 class="card-header">Mes infos</h5>
-                    <div class="card-body">
-                        <p>
-                        <h4 class="card-title username">
-                            <%= user.username %>
-                        </h4>
-                        </p>
-                        <p class="card-text email">Email: <%= user.email%></p>
-                        <p class="role card-text"> Role: <%= user.role %></p>
-                    </div>
+  <body>
+    <%- include('./partials/navbar',{connected:connected,admin:admin}); %>
+    <h1 class="p-2 text-center">Profil</h1>
+    <div class="card">
+      <h4 class="card-header">Mes infos</h4>
+      <div class="card-body">
+        <h4 class="card-title username"><%= user.username %></h4>
+        <p class="card-text email">Email: <%= user.email%></p>
+        <p class="role card-text">Role: <%= user.role %></p>
+      </div>
+    </div>
+    <div class="change">
+      <p>
+        <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseExample"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+        >
+          Changer de mot de passe
+        </button>
+      </p>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <div id="liveAlertPlaceholder"></div>
+          <form id="changePassword">
+            <div class="mb-3">
+              <label for="PasswordInput" class="form-label">Old Password</label>
+              <input type="password" required class="form-control" id="oldPassword" />
             </div>
-            <div class="change">
-                <p>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        Changer de mot de passe
-                    </button>
-
-                </p>
-                <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <div id="liveAlertPlaceholder"></div>
-                        <form id="changePassword">
-                            <div class="mb-3">
-                                <label for="PasswordInput" class="form-label">Old Password</label>
-                                <input type="password" required class="form-control" id="oldPassword">
-                            </div>
-                            <div class="mb-3">
-                                <label for="PasswordInput" class="form-label">New Password</label>
-                                <input type="password" required class="form-control" id="newPassword">
-                            </div>
-                            <button class="btn btn-primary">
-                                <div id="submit-text">Changer</div>
-                                <span id="submit-spinner" style="display: none;" class="spinner-border spinner-border-sm"
-                                    role="status" aria-hidden="true"></span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+            <div class="mb-3">
+              <label for="PasswordInput" class="form-label">New Password</label>
+              <input type="password" required class="form-control" id="newPassword" />
             </div>
+            <button class="btn btn-primary">
+              <div id="submit-text">Changer</div>
+              <span
+                id="submit-spinner"
+                style="display: none"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
 
-            <%- include('./partials/script'); %>
-            <script src="/js/profil.js"></script>
-    </body>
+    <%- include('./partials/script'); %>
+    <script src="/js/profil.js"></script>
+  </body>
+</html>

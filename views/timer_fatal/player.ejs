@@ -1,103 +1,111 @@
-<%- include('../partials/header',{root:"../../"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../../"}); %>
     <title>Timer Fatal</title>
-    </head>
+  </head>
 
-    <body>
-        <%- include('../partials/navbarlow'); %>
+  <body>
+    <%- include('../partials/navbarlow'); %>
 
-            <h1 class="text-center display-6 mt-3">Code partie : <%= code %>
-            </h1>
-            <div class="row">
-
-                <div class="card col-4 mx-auto" id="user-card">
-                    <div class="card-body">
-                        <form action="" method="post" id="form-pseudo">
-                            <div class="col-xs-4">
-                                <input type="hidden" name="code" id="code" value=<%=code %>>
-                                <label for="username" class="form-label ">Pseudo</label>
-                                <input type="text" pattern="[a-zA-Z0-9]+" name="" id="username" class="form-control"
-                                    minlength="2" maxlength="20" placeholder="Saisir votre pseudo" required>
-                            </div>
-                            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
-                        </form>
-                    </div>
-                </div>
+    <h1 class="text-center display-6 mt-3">Code partie : <%= code %></h1>
+    <div class="row">
+      <div class="card col-4 mx-auto" id="user-card">
+        <div class="card-body">
+          <form action="" method="post" id="form-pseudo">
+            <div class="col-xs-4">
+              <input type="hidden" name="code" id="code" value="<%=code %>" />
+              <label for="username" class="form-label">Pseudo</label>
+              <input
+                type="text"
+                pattern="[a-zA-Z0-9]+"
+                name=""
+                id="username"
+                class="form-control"
+                minlength="2"
+                maxlength="20"
+                placeholder="Saisir votre pseudo"
+                required
+              />
             </div>
-            <div class="container my-4 text-center" id="app-div" style="display: none;">
-                <!-- Ligne 1 : Joueurs 1 à 3 -->
-                <div class="row my-5">
-                    <% for (let i=1; i <=3; i++) { %>
-                        <div class="col-12 col-md-4">
-                            <div class="card mx-auto" style="max-width: 18rem;" id="player-slot-<%= i %>">
-                                <div class="card-header">
-                                    <h3 class="h5 mb-0" id="player-name-<%= i %>">Joueur <%= i %>
-                                    </h3>
-                                </div>
-                                <div class="card-body">
-                                    <span id="player-timer-<%= i %>">00:00</span>
-                                </div>
-                            </div>
-                        </div>
-                        <% } %>
-                </div>
-
-                <!-- Ligne 2 : Joueur 4 - Buzzer - Joueur 5 -->
-                <div class="row my-5 align-items-center">
-                    <div class="col-12 col-md-4">
-                        <div class="card mx-auto" style="max-width: 18rem;" id="player-slot-4">
-                            <div class="card-header">
-                                <h3 class="h5 mb-0" id="player-name-4">Joueur 4</h3>
-                            </div>
-                            <div class="card-body">
-                                <span  id="player-timer-4">00:00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
-                        <svg style="max-width: 200px;" viewBox="0 0 200 200" id="buzzer">
-                            <circle cx="100" cy="100" r="90" stroke="black" stroke-width="4" fill="yellow"
-                                id="buzzer-circle"></circle>
-                            <text x="100" y="110" text-anchor="middle" class="fs-3" id="buzzer-state">Bloqué</text>
-                        </svg>
-                    </div>
-
-                    <div class="col-12 col-md-4">
-                        <div class="card mx-auto" style="max-width: 18rem;" id="player-slot-5">
-                            <div class="card-header">
-                                <h3 class="h5 mb-0" id="player-name-5">Joueur 5</h3>
-                            </div>
-                            <div class="card-body">
-                                <span id="player-timer-5">00:00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ligne 3 : Joueurs 6 à 8 -->
-                <div class="row my-5">
-                    <% for (let i=6; i <=8; i++) { %>
-                        <div class="col-12 col-md-4">
-                            <div class="card mx-auto" style="max-width: 18rem;" id="player-slot-<%= i %>">
-                                <div class="card-header">
-                                    <h3 class="h5 mb-0" id="player-name-<%= i %>">Joueur <%= i %>
-                                    </h3>
-                                </div>
-                                <div class="card-body">
-                                    <span id="player-timer-<%= i %>">00:00</span>
-                                </div>
-                            </div>
-                        </div>
-                        <% } %>
-                </div>
+            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="container my-4 text-center" id="app-div" style="display: none">
+      <!-- Ligne 1 : Joueurs 1 à 3 -->
+      <div class="row my-5">
+        <% for (let i=1; i <=3; i++) { %>
+        <div class="col-12 col-md-4">
+          <div class="card mx-auto" style="max-width: 18rem" id="player-slot-<%= i %>">
+            <div class="card-header">
+              <h3 class="h5 mb-0" id="player-name-<%= i %>">Joueur <%= i %></h3>
             </div>
-
-            <div class="row" id="spec-message" style="display: none;">
-                <h2>Tu es spectateur</h2>
+            <div class="card-body">
+              <span id="player-timer-<%= i %>">00:00</span>
             </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
 
-            <div class="alert alert-success mt-4 container d-none" id="host-feedback"></div>
-            
-            <%- include('../partials/script'); %>
-            <script src="/js/timer_fatalplayer.js"></script>
-    </body>
+      <!-- Ligne 2 : Joueur 4 - Buzzer - Joueur 5 -->
+      <div class="row my-5 align-items-center">
+        <div class="col-12 col-md-4">
+          <div class="card mx-auto" style="max-width: 18rem" id="player-slot-4">
+            <div class="card-header">
+              <h3 class="h5 mb-0" id="player-name-4">Joueur 4</h3>
+            </div>
+            <div class="card-body">
+              <span id="player-timer-4">00:00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+          <svg style="max-width: 200px" viewBox="0 0 200 200" id="buzzer">
+            <circle cx="100" cy="100" r="90" stroke="black" stroke-width="4" fill="yellow" id="buzzer-circle"></circle>
+            <text x="100" y="110" text-anchor="middle" class="fs-3" id="buzzer-state">Bloqué</text>
+          </svg>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card mx-auto" style="max-width: 18rem" id="player-slot-5">
+            <div class="card-header">
+              <h3 class="h5 mb-0" id="player-name-5">Joueur 5</h3>
+            </div>
+            <div class="card-body">
+              <span id="player-timer-5">00:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ligne 3 : Joueurs 6 à 8 -->
+      <div class="row my-5">
+        <% for (let i=6; i <=8; i++) { %>
+        <div class="col-12 col-md-4">
+          <div class="card mx-auto" style="max-width: 18rem" id="player-slot-<%= i %>">
+            <div class="card-header">
+              <h3 class="h5 mb-0" id="player-name-<%= i %>">Joueur <%= i %></h3>
+            </div>
+            <div class="card-body">
+              <span id="player-timer-<%= i %>">00:00</span>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="row" id="spec-message" style="display: none">
+      <h2>Tu es spectateur</h2>
+    </div>
+
+    <div class="alert alert-success mt-4 container d-none" id="host-feedback"></div>
+
+    <%- include('../partials/script'); %>
+    <script src="/js/timer_fatalplayer.js"></script>
+  </body>
+</html>

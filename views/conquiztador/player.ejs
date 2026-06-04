@@ -1,241 +1,257 @@
-<%- include('../partials/header',{root:"../../"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../../"}); %>
     <title>Bunka - Player</title>
-    <link rel="stylesheet" type="text/css" href="/css/conquiztador.css">
-    </head>
+    <link rel="stylesheet" type="text/css" href="/css/conquiztador.css" />
+  </head>
 
-    <body>
-        <%- include('../partials/navbarlow'); %>
+  <body>
+    <%- include('../partials/navbarlow'); %>
 
-            <h1 class="text-center display-4" style="display: none;">Game Code: <%= code %>
-            </h1>
-            <!-- Pseudo -->
+    <h1 class="text-center display-4" style="display: none">Game Code: <%= code %></h1>
+    <!-- Pseudo -->
+    <div class="row">
+      <div class="card col-4 mx-auto" id="user-card">
+        <div class="card-body">
+          <form action="" method="post" id="form-pseudo">
+            <div class="col-xs-4">
+              <input type="hidden" name="code" id="code" value="<%=code %>" />
+              <label for="username" class="form-label">Pseudo</label>
+              <input
+                type="text"
+                name="username"
+                id="username"
+                class="form-control"
+                minlength="2"
+                maxlength="20"
+                placeholder="Saisir votre pseudo"
+                pattern="[a-zA-Z0-9]+"
+                required
+              />
+            </div>
+            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- App -->
+
+    <div class="row" id="app-div-manche1" style="display: none">
+      <!-- Joueur 1-->
+      <div class="col-3">
+        <div class="mx-auto text-center pt-5 joueur1-div" style="text-align: center">
+          <div class="card mx-auto col-8">
+            <div class="card-header">
+              <h3 class="joueur1-name">Joueur 1</h3>
+            </div>
+            <div class="card-body joueur1-score-div"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 mx-auto my-auto">
+        <div class="container">
+          <div class="row">
+            <h3 class="col-4 mx-auto text-center theme" id="theme1" style="visibility: hidden">Thème 1</h3>
+            <h3 class="col-4 mx-auto text-center theme" id="theme2" style="visibility: hidden">Thème 2</h3>
+            <h3 class="col-4 mx-auto text-center theme" id="theme3" style="visibility: hidden">Thème 3</h3>
+          </div>
+          <div class="row">
+            <div class="col-4 block" id="block-3" data-case="3">3 cases</div>
+            <div class="col-4 block" id="block-6" data-case="6">3 cases</div>
+            <div class="col-4 block" id="block-9" data-case="9">3 cases</div>
+          </div>
+          <div class="row">
+            <div class="col-4 block" id="block-2" data-case="2">2 cases</div>
+            <div class="col-4 block" id="block-5" data-case="5">2 cases</div>
+            <div class="col-4 block" id="block-8" data-case="8">2 cases</div>
+          </div>
+          <div class="row">
+            <div class="col-4 block" id="block-1" data-case="1">1 case</div>
+            <div class="col-4 block" id="block-4" data-case="4">1 case</div>
+            <div class="col-4 block" id="block-7" data-case="7">1 case</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Joueur 2-->
+      <div class="col-3">
+        <div class="mx-auto text-center pt-5 joueur2-div" style="text-align: center">
+          <div class="card mx-auto col-8">
+            <div class="card-header joueur2-name">
+              <h3>Joueur 2</h3>
+            </div>
+            <div class="card-body joueur2-score-div"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manche 2 -->
+
+    <div class="row" id="app-div-manche2" style="display: none">
+      <!-- Joueur 1-->
+      <div class="col-3">
+        <div class="mx-auto text-center pt-5 joueur1-div" style="text-align: center">
+          <div class="card mx-auto col-8 joueur1-card">
+            <div class="card-header">
+              <h3 class="joueur1-name">Joueur 1</h3>
+            </div>
+            <div class="card-body joueur1-score-div"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <svg height="100%" width="100%" class="m-auto" id="buzzer">
+          <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow" id="buzzer-circle" />
+          <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
+        </svg>
+      </div>
+
+      <!-- Joueur 2-->
+      <div class="col-3">
+        <div class="mx-auto text-center pt-5 joueur2-div" style="text-align: center">
+          <div class="card mx-auto col-8 joueur2-card">
+            <div class="card-header">
+              <h3 class="joueur2-name">Joueur 2</h3>
+            </div>
+            <div class="card-body joueur2-score-div"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row py-2 mx-1" id="turf">
+        <?xml version="1.0" encoding="utf-8"?>
+        <svg viewBox="0 0 800 100" xmlns="http://www.w3.org/2000/svg">
+          <linearGradient id="grad-interieur" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="30%" id="grad-interieur-orange" style="stop-color: orange; stop-opacity: 1"></stop>
+            <stop
+              offset="30%"
+              id="grad-interieur-white-2"
+              style="stop-color: rgb(255, 255, 255); stop-opacity: 1"
+            ></stop>
+            <stop
+              offset="70%"
+              id="grad-interieur-white-1"
+              style="stop-color: rgb(255, 255, 255); stop-opacity: 1"
+            ></stop>
+            <stop offset="0%" id="grad-interieur-blue" style="stop-color: rgb(22, 45, 148); stop-opacity: 1"></stop>
+          </linearGradient>
+          <rect
+            x="0"
+            y="0"
+            width="800"
+            height="40"
+            style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur)"
+            transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 0)"
+          />
+          <g id="bar-ticks"></g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Manche Finale -->
+    <div class="container" id="app-div-finale" style="display: none">
+      <div class="row">
+        <div class="col">
+          <div class="case-finale block text-center fs-1" data-case="1" id="finale-1"></div>
+          <div class="case-finale block text-center fs-1" data-case="2" id="finale-2"></div>
+          <div class="case-finale block text-center fs-1" data-case="3" id="finale-3"></div>
+          <div class="case-finale block text-center fs-1" data-case="4" id="finale-4"></div>
+          <div class="case-finale block text-center fs-1" data-case="5" id="finale-5"></div>
+        </div>
+        <div class="col">
+          <div class="case-finale block text-center fs-1" data-case="6" id="finale-6"></div>
+          <div class="case-finale block text-center fs-1" data-case="7" id="finale-7"></div>
+          <div class="case-finale block text-center fs-1" data-case="8" id="finale-8"></div>
+          <div class="case-finale block text-center fs-1" data-case="9" id="finale-9"></div>
+          <div class="case-finale block text-center fs-1" data-case="10" id="finale-10"></div>
+        </div>
+      </div>
+    </div>
+    <div class="konami-container" id="app-konami-question" style="display: none">
+      <div id="konami-number"><div id="konami-number-number">1</div></div>
+      <div id="konami-question">
+        QUELLE NOURRITURE MIRACULEUSE A ÉTÉ FOURNIE PAR DIEU AUX ISRAÉLITES PENDANT LEUR TRAVERSÉE DU DÉSERT, SELON LA
+        BIBLE ?
+      </div>
+    </div>
+
+    <div class="alert alert-success mt-5" style="display: none" id="success-alert"></div>
+
+    <div class="row" id="spec-message" style="display: none">
+      <h2>Tu es spectateur</h2>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalQuestion"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="question-header"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="question-header">Voici la question</h2>
+          </div>
+          <div class="modal-body">
+            <h3 id="question-div"></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modal-manche0"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="manche0-modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="manche0-modal">Estimation</h2>
+          </div>
+          <div class="modal-body">
             <div class="row">
+              <div class="col-2"><label> Question : </label></div>
+              <div class="col-4" id="conquiz-estimation-question"></div>
 
-                <div class="card col-4 mx-auto" id="user-card">
-                    <div class="card-body">
-                        <form action="" method="post" id="form-pseudo">
-                            <div class="col-xs-4">
-                                <input type="hidden" name="code" id="code" value=<%=code %>>
-                                <label for="username" class="form-label ">Pseudo</label>
-                                <input type="text" name="username" id="username" class="form-control" minlength="2"
-                                    maxlength="20" placeholder="Saisir votre pseudo" pattern="[a-zA-Z0-9]+" required>
-                            </div>
-                            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
-                        </form>
-                    </div>
-                </div>
+              <div class="col-2">
+                <label class="form-check-label" for="conquiz-estimation-reponse"> Réponse : </label>
+              </div>
+              <div class="col-2">
+                <input
+                  type="number"
+                  name="conquiz-estimation-reponse"
+                  id="conquiz-estimation-reponse-input"
+                  class="form-control col-2"
+                  minlength="0"
+                  placeholder="0"
+                  required
+                />
+              </div>
             </div>
-
-
-            <!-- App -->
-
-            <div class="row" id="app-div-manche1" style="display: none;">
-
-                <!-- Joueur 1-->
-                <div class="col-3">
-                    <div class="mx-auto text-center pt-5 joueur1-div" style="text-align:center;">
-                        <div class="card mx-auto col-8">
-                            <div class="card-header">
-                                <h3 class="joueur1-name">Joueur 1</h3>
-                            </div>
-                            <div class="card-body joueur1-score-div" >
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-6 mx-auto my-auto">
-                    <div class="container">
-                        <div class="row">
-                            <h3 class="col-4 mx-auto text-center theme" id="theme1" style="visibility: hidden;">Thème 1</h3>
-                            <h3 class="col-4 mx-auto text-center theme" id="theme2" style="visibility: hidden;">Thème 2</h3>
-                            <h3 class="col-4 mx-auto text-center theme" id="theme3" style="visibility: hidden;">Thème 3</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 block" id="block-3" data-case="3">3 cases</div>
-                            <div class="col-4 block" id="block-6" data-case="6">3 cases</div>
-                            <div class="col-4 block" id="block-9" data-case="9">3 cases</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 block" id="block-2" data-case="2">2 cases</div>
-                            <div class="col-4 block" id="block-5" data-case="5">2 cases</div>
-                            <div class="col-4 block" id="block-8" data-case="8">2 cases</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 block" id="block-1" data-case="1">1 case</div>
-                            <div class="col-4 block" id="block-4" data-case="4">1 case</div>
-                            <div class="col-4 block" id="block-7" data-case="7">1 case</div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Joueur 2-->
-                <div class="col-3">
-                    <div  class="mx-auto text-center pt-5 joueur2-div" style="text-align:center;">
-                        <div class="card mx-auto col-8">
-                            <div class="card-header joueur2-name" >
-                                <h3>Joueur 2</h3>
-                            </div>
-                            <div class="card-body joueur2-score-div" >
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
+            <div class="col-3">
+              <button type="button" class="btn btn-primary" id="conquiz-manche0-button">Répondre</button>
             </div>
+          </div>
 
-            <!-- Manche 2 -->
+          <div class="modal-footer" id="manche0-options">
+            <div class="row"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <div class="row" id="app-div-manche2" style="display: none;">
-
-                <!-- Joueur 1-->
-                <div class="col-3">
-                    <div class="mx-auto text-center pt-5 joueur1-div" style="text-align:center;">
-                        <div class="card mx-auto col-8 joueur1-card">
-                            <div class="card-header">
-                                <h3 class="joueur1-name">Joueur 1</h3>
-                            </div>
-                            <div class="card-body joueur1-score-div" >
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-6">
-                    <svg height="100%" width="100%" class="m-auto" id="buzzer">
-                        <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow"
-                            id="buzzer-circle" />
-                        <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
-                    </svg>
-
-                </div>
-
-                <!-- Joueur 2-->
-                <div class="col-3">
-                    <div class="mx-auto text-center pt-5 joueur2-div" style="text-align:center;">
-                        <div class="card mx-auto col-8 joueur2-card">
-                            <div class="card-header">
-                                <h3 class="joueur2-name">Joueur 2</h3>
-                            </div>
-                            <div class="card-body joueur2-score-div">
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row py-2 mx-1" id="turf">
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <svg viewBox="0 0 800 100" xmlns="http://www.w3.org/2000/svg">
-                        <linearGradient id="grad-interieur" x1="100%" y1="0%" x2="0%" y2="0%">
-                            <stop offset="30%" id="grad-interieur-orange" style="stop-color: orange; stop-opacity: 1"></stop>
-                            <stop offset="30%" id="grad-interieur-white-2" style="stop-color: rgb(255, 255, 255);; stop-opacity: 1"></stop>
-                            <stop offset="70%" id="grad-interieur-white-1" style="stop-color: rgb(255, 255, 255);; stop-opacity: 1"></stop>
-                            <stop offset="0%" id="grad-interieur-blue" style="stop-color: rgb(22, 45, 148);; stop-opacity: 1"></stop>
-                        </linearGradient>
-                        <rect x="0" y="0" width="800" height="40" style="stroke: rgb(0, 0, 0);  fill: url(#grad-interieur);"
-                            transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 0)" />
-                            <g id="bar-ticks"></g>
-                    </svg>
-                </div>
-
-                
-            </div>
-
-            <!-- Manche Finale -->
-            <div class="container" id="app-div-finale" style="display: none;">
-                <div class="row">
-                    <div class="col">
-                        <div class="case-finale block text-center fs-1" data-case="1" id="finale-1"></div>
-                        <div class="case-finale block text-center fs-1" data-case="2" id="finale-2"></div>
-                        <div class="case-finale block text-center fs-1" data-case="3" id="finale-3"></div>
-                        <div class="case-finale block text-center fs-1" data-case="4" id="finale-4"></div>
-                        <div class="case-finale block text-center fs-1" data-case="5" id="finale-5"></div>
-                    </div>
-                    <div class="col">
-                        <div class="case-finale block text-center fs-1" data-case="6" id="finale-6"></div>
-                        <div class="case-finale block text-center fs-1" data-case="7" id="finale-7"></div>
-                        <div class="case-finale block text-center fs-1" data-case="8" id="finale-8"></div>
-                        <div class="case-finale block text-center fs-1" data-case="9" id="finale-9"></div>
-                        <div class="case-finale block text-center fs-1" data-case="10" id="finale-10"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="konami-container" id="app-konami-question" style="display: none;">
-                <div id="konami-number"><div id="konami-number-number">1</div></div>
-                <div id="konami-question">
-                    QUELLE NOURRITURE MIRACULEUSE A ÉTÉ FOURNIE PAR DIEU AUX ISRAÉLITES PENDANT LEUR TRAVERSÉE DU DÉSERT, SELON LA BIBLE ?
-                </div>
-            </div>
-
-            <div class="alert alert-success mt-5" style="display: none;" id="success-alert">
-
-            </div>
-
-
-            <div class="row" id="spec-message" style="display: none;">
-                <h2>Tu es spectateur</h2>
-            </div>
-
-            <div class="modal fade" id="modalQuestion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="question-header" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="question-header">Voici la question</h2>
-                        </div>
-                        <div class="modal-body">
-                            <h3 id="question-div"></h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="modal-manche0" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="manche0-modal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="manche0-modal">Estimation </h2>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-2">
-                                    Question : 
-                                    </label>
-                                </div>
-                                <div class="col-4" id="conquiz-estimation-question"> </div>
-                                
-                                <div class="col-2"><label class="form-check-label " for="conquiz-estimation-reponse">
-                                    Réponse : 
-                                    </label>
-                                </div>
-                                    <div class="col-2"><input type="number" name="conquiz-estimation-reponse" id="conquiz-estimation-reponse-input"
-                                        class="form-control col-2" minlength="0" placeholder="0" required></div>
-                        
-                                </div>
-                                <div class="col-3"><button type="button" class="btn btn-primary"
-                                    id="conquiz-manche0-button">Répondre</button></div>
-                            </div>
-                            
-
-                        <div class="modal-footer" id="manche0-options">
-                            <div class="row">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-                <%- include('../partials/script'); %>
-                    <script src="/js/conquiztadorplayer.js"></script>
-    </body>
+    <%- include('../partials/script'); %>
+    <script src="/js/conquiztadorplayer.js"></script>
+  </body>
+</html>

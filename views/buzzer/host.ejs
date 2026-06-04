@@ -1,101 +1,139 @@
-<%- include('../partials/header',{root:"../../"}); %>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('../partials/header',{root:"../../"}); %>
     <title>Buzzer - Host</title>
-    </head>
+  </head>
 
-    <body>
-        <%- include('../partials/navbarlow'); %>
+  <body>
+    <%- include('../partials/navbarlow'); %>
 
-            <h1 class="text-center display-4">Game Code: <%= code %>
-            </h1>
+    <h1 class="text-center display-4">Game Code: <%= code %></h1>
 
-            <!-- Pseudo -->
-            <div class="row">
-
-                <div class="card col-4 mx-auto" id="user-card">
-                    <div class="card-body">
-                        <form action="" method="post" id="form-pseudo">
-                            <div class="col-xs-4">
-                                <input type="hidden" name="code" id="code" value=<%=code %>>
-                                <label for="username" class="form-label ">Pseudo</label>
-                                <input type="text" name="" id="username" class="form-control" minlength="2"
-                                    maxlength="20" placeholder="Saisir votre pseudo" pattern="[a-zA-Z0-9]+" required>
-                            </div>
-                            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
-                        </form>
-                    </div>
-                </div>
+    <!-- Pseudo -->
+    <div class="row">
+      <div class="card col-4 mx-auto" id="user-card">
+        <div class="card-body">
+          <form action="" method="post" id="form-pseudo">
+            <div class="col-xs-4">
+              <input type="hidden" name="code" id="code" value="<%=code %>" />
+              <label for="username" class="form-label">Pseudo</label>
+              <input
+                type="text"
+                name=""
+                id="username"
+                class="form-control"
+                minlength="2"
+                maxlength="20"
+                placeholder="Saisir votre pseudo"
+                pattern="[a-zA-Z0-9]+"
+                required
+              />
             </div>
-            
-            <!--Options -->
-            <div class="text-center">
-                <button type="button" class="btn btn-secondary btn-lg mx-auto" style="display: none;"
-                    id="settings-button">Options</button>
+            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!--Options -->
+    <div class="text-center">
+      <button type="button" class="btn btn-secondary btn-lg mx-auto" style="display: none" id="settings-button">
+        Options
+      </button>
+    </div>
+    <div class="row text-center border-top border-bottom mx-auto my-2" id="settings" style="display: none">
+      <h1 class="mx-auto my-2">Options</h1>
+      <div class="row mx-auto my-2">
+        <div class="col-4"></div>
+        <div class="dropdown col-lg-2">
+          <button
+            class="btn btn-primary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Mode de buzz
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item modes text-light bg-dark" id="default-mode">1 buzz à la fois</a></li>
+            <li><a class="dropdown-item modes" id="multi-mode">Plusieurs buzzs à la fois</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2">
+          <input
+            type="checkbox"
+            class="btn-check"
+            id="btn-points"
+            data-bs-toggle="modal"
+            data-bs-target="#modalPoints"
+          />
+          <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalPoints" for="btn-points"
+            >Activer points</label
+          ><br />
+        </div>
+        <div class="col-lg-2">
+          <input type="checkbox" class="btn-check" id="btn-9pg" data-bs-toggle="modal" data-bs-target="#modal9PG" />
+          <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal9PG" for="btn-9pg"
+            >Activer mode 9PG</label
+          ><br />
+        </div>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="modalPoints"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Attention</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Vous avez activé le comptage de points. Pour valider un buzz, cliquez sur le petit bouton vert à côté
+                d'un joueur qui a buzzé et notez le nombre de points
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai compris</button>
+              </div>
             </div>
-            <div class="row text-center border-top border-bottom mx-auto my-2" id="settings" style="display: none;">
-                <h1 class="mx-auto my-2">Options</h1>
-                <div class="row mx-auto my-2">
-                    <div class="col-4"></div>
-                    <div class="dropdown col-lg-2">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Mode de buzz
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item modes text-light bg-dark" id="default-mode">1 buzz à la fois</a>
-                            </li>
-                            <li><a class="dropdown-item modes" id="multi-mode">Plusieurs buzzs à la fois</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2">
-                        <input type="checkbox" class="btn-check" id="btn-points" data-bs-toggle="modal" data-bs-target="#modalPoints">
-                        <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalPoints" for="btn-points">Activer points</label><br>
-                    </div>
-                    <div class="col-lg-2">
-                        <input type="checkbox" class="btn-check" id="btn-9pg" data-bs-toggle="modal" data-bs-target="#modal9PG">
-                        <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal9PG" for="btn-9pg">Activer mode 9PG</label><br>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="modalPoints" data-bs-backdrop="static" data-bs-keyboard="false"
-                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Attention</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Vous avez activé le comptage de points. Pour valider un buzz, cliquez sur le petit bouton vert à côté d'un joueur qui a buzzé et notez le nombre de points
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai
-                                        compris</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="modal9PG" data-bs-backdrop="static" data-bs-keyboard="false"
-                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Attention</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Vous avez activé le mode 9 Points gagnants. Pour valider un buzz, cliquez sur le petit bouton vert à côté d'un joueur qui a buzzé, les points seront mis automatiquement. Vous pourrez toujours régler les erreurs en cliquant sur le score des joueurs.
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai
-                                        compris</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4"></div>
-                </div>
-                <!-- <div class="row mx-auto my-2">
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="modal9PG"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Attention</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Vous avez activé le mode 9 Points gagnants. Pour valider un buzz, cliquez sur le petit bouton vert à
+                côté d'un joueur qui a buzzé, les points seront mis automatiquement. Vous pourrez toujours régler les
+                erreurs en cliquant sur le score des joueurs.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai compris</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4"></div>
+      </div>
+      <!-- <div class="row mx-auto my-2">
                     <div class="col-4"></div>
                     <div class="col-2">
                     <input type="number" name="" id="9pg-time" class="form-control" minlength="1"
@@ -106,85 +144,92 @@
                     </div>
                     <div class="col-4"></div>
                 </div> -->
+    </div>
+
+    <!-- App -->
+    <div id="app-div" style="display: none">
+      <div class="row">
+        <!-- Buzzer -->
+        <div
+          id="buzzer-div"
+          class="mx-auto text-center col-lg-4 col-sm-6 border-right"
+          style="border-right: 1px solid #ccc"
+        >
+          <h2>Etat du Buzzer</h2>
+          <svg height="90%" width="90%" class="mx-auto" id="buzzer">
+            <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow" id="buzzer-circle" />
+            <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
+          </svg>
+        </div>
+        <!-- Buttons -->
+        <div
+          id="buttons"
+          class="mx-auto my-2 text-center col-lg-2 col-sm-6 border-right"
+          style="border-right: 1px solid #ccc"
+        >
+          <h2>Commandes</h2>
+          <button type="button" class="btn btn-warning" id="bloquer">Bloquer (B)</button>
+          <button type="button" class="btn btn-success" id="liberer">Libérer (L)</button>
+          <button type="button" class="btn btn-secondary" id="reset" style="display: none">Reset (R)</button>
+          <button type="button" class="btn btn-secondary" id="passer" style="display: none">Passer</button>
+        </div>
+        <!-- Buzzlist -->
+        <div id="buzzlist-div " class="mx-auto text-center col pt-5" style="text-align: center">
+          <div class="card mx-auto col-8">
+            <div class="card-header">Liste des Buzz</div>
+            <div class="card-body">
+              <ul class="list-group" id="buzzing-list"></ul>
             </div>
+          </div>
+        </div>
+      </div>
+      <!-- Player list -->
+      <div id="players-div " class="mx-auto text-center col pt-5" style="text-align: center">
+        <div class="card mx-auto col-8">
+          <div class="card-header">Liste des joueurs</div>
+          <div class="card-body">
+            <ul class="list-group" id="player-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <!-- App -->
-            <div id="app-div" style="display: none;">
-                <div class="row">
-                    <!-- Buzzer -->
-                    <div id="buzzer-div" class="mx-auto text-center col-lg-4 col-sm-6 border-right"
-                        style=" border-right: 1px solid #ccc;">
-                        <h2>Etat du Buzzer</h2>
-                        <svg height="90%" width="90%" class="mx-auto" id="buzzer">
-                            <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow"
-                                id="buzzer-circle" />
-                            <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
-                        </svg>
-                    </div>
-                    <!-- Buttons -->
-                    <div id="buttons" class="mx-auto my-2 text-center col-lg-2 col-sm-6 border-right"
-                        style=" border-right: 1px solid #ccc;">
-                        <h2>Commandes</h2>
-                        <button type="button" class="btn btn-warning" id="bloquer">Bloquer (B)</button>
-                        <button type="button" class="btn btn-success" id="liberer">Libérer (L)</button>
-                        <button type="button" class="btn btn-secondary" id="reset" style="display: none;">Reset
-                            (R)</button>
-                        <button type="button" class="btn btn-secondary" id="passer" style="display: none;">Passer
-                            </button>
-                    </div>
-                    <!-- Buzzlist -->
-                    <div id="buzzlist-div " class="mx-auto text-center col pt-5" style="text-align:center;">
-                        <div class="card mx-auto col-8">
-                            <div class="card-header">
-                                Liste des Buzz
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-group" id="buzzing-list">
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+    <div class="alert alert-success mt-5" style="display: none" id="success-alert"></div>
+    <!-- Validate points -->
+    <div
+      class="modal fade"
+      id="modalGivePoints"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="pseudo-modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pseudo-modal">Valider la réponse</h5>
+          </div>
+          <div class="modal-body">
+            <label for="score" class="form-label" id="modal-score-label">Donnez des points pour la réponse :</label>
+            <input
+              type="number"
+              name="score"
+              id="score-input"
+              class="form-control"
+              placeholder="Nombre de points"
+              pattern="[0-9\s]+"
+              required
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-validate" data-bs-dismiss="modal">Valider</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                </div>
-                <!-- Player list -->
-                <div id="players-div " class="mx-auto text-center col pt-5" style="text-align:center;">
-                    <div class="card mx-auto col-8">
-                        <div class="card-header">
-                            Liste des joueurs
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group" id="player-list">
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alert alert-success mt-5" style="display: none;" id="success-alert">
-
-            </div>
-<!-- Validate points -->
-            <div class="modal fade" id="modalGivePoints" data-bs-backdrop="static" data-bs-keyboard="false"
-                        tabindex="-1" aria-labelledby="pseudo-modal" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title " id="pseudo-modal">Valider la réponse</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <label for="score" class="form-label" id="modal-score-label">Donnez des points pour la réponse :</label>
-                                <input type="number" name="score" id="score-input" class="form-control" placeholder="Nombre de points" pattern="[0-9\s]+" required>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" id="btn-validate" data-bs-dismiss="modal">Valider</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-            <%- include('../partials/script'); %>
-                <script src="/js/9pghost.js"></script>
-    </body>
+    <%- include('../partials/script'); %>
+    <script src="/js/9pghost.js"></script>
+  </body>
+</html>
