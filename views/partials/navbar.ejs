@@ -22,23 +22,26 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="/apps/buzzer">Buzzer</a></li>
                         <li><a class="dropdown-item" href="/apps/4als">4ALS</a></li>
+                        <li><a class="dropdown-item" href="/apps/faf">Face à face</a></li>
+                        <li><a class="dropdown-item" href="/apps/bunka">Bunka</a></li>
+                        <li><a class="dropdown-item" href="/apps/chrono_fatal">Chrono Fatal</a></li>
                     </ul>
                 </li>
             </ul>
             <ul class="navbar-nav" style="margin-left: auto;">
                 <% if (!connected) { %>
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/apps/login">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
+                    <a class="nav-link" href="/apps/register">Register</a>
                 </li>
                 <% } else { %>
                 <li class="nav-item">
                     <a class="nav-link" href="/profil">Profil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/apps/logout">Logout</a>
                 </li>
                 <% } %>
             </ul>

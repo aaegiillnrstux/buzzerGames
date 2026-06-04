@@ -11,6 +11,10 @@ const player = {
 
 const socket = io();
 
+lowLag.init();
+lowLag.load('/components/buzzsound.mp3');
+lowLag.load('/components/Ding.mp3');
+
 let start = false;
 
 $(".modes").on('click',(e)=>{
@@ -26,13 +30,24 @@ $("#liberer").on('click',(e)=>{
 $("#bloquer").on('click',(e)=>{
     block("all");
 });
+
 $('#reset').on('click',(e)=>{
     console.log("reset");
     socket.emit("resetPoints");
 });
 
+$('#passer').on('click',(e)=>{
+    console.log("passer");
+    socket.emit("passer");
+});
+
 $('#btn-points').on('change',(e)=>{
     socket.emit("changePointsMode",$('#btn-points').is(':checked'));
+});
+
+$('#btn-9pg').on('change',(e)=>{
+    console.log($('#btn-9pg').is(':checked'));
+    socket.emit("change9PGMode",$('#btn-9pg').is(':checked'));
 });
 
 $(function(){
@@ -141,23 +156,41 @@ socket.on("buzzed",()=>{
     buzzed();
 });
 
-socket.on("player buzz",(buzzes,bool)=>{
+socket.on("passer",(nbpoint)=>{
+    liberer("all");
+    $("#success-alert").html(`<strong>Passage à ${nbpoint} </strong>`);
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+});
+
+socket.on("player buzz",(buzzes,bool,npg)=>{
     console.log(JSON.stringify(buzzes));
     $('.check-buzz').off('click');
     $('#buzzing-list').empty();
     buzzes.forEach((buzz)=>{
         var htmlcode = `<li class="list-group-item"  >${buzz.player}  `;
-        if (bool){
+        if (bool & !npg){
             htmlcode += `<i class="fa-solid fa-circle-check check-buzz" style="color:green" data-username="${buzz.player}" id="${buzz.player}-check" data-bs-toggle="modal" data-bs-target="#modalGivePoints"></i>`;
+        }
+        else if (npg){
+            htmlcode += `<i class="fa-solid fa-circle-check check-buzz" style="color:green" data-username="${buzz.player}" id="${buzz.player}-check"></i>`;
         }
         htmlcode += '</li>';
         $('#buzzing-list').append(htmlcode);
         $(`#${buzz.player}-check`).on('click',(e)=>{
-            $('#pseudo-modal').text(`${buzz.player}`);
-            $('#btn-validate').attr("data-username", `${buzz.player}`);
-            $('#btn-validate').on('click',(e)=>{
-                validerPoints(e.target);
-            });
+            if (npg){
+                socket.emit("change points 9PG",e.target.dataset.username);
+                liberer("all");
+            }
+            else{
+                $('#pseudo-modal').text(`${buzz.player}`);
+                $('#btn-validate').attr("data-username", `${buzz.player}`);
+                $('#btn-validate').on('click',(e)=>{
+                    validerPoints(e.target);
+                });
+            }
+
         });
     });
     
@@ -165,6 +198,9 @@ socket.on("player buzz",(buzzes,bool)=>{
 
 socket.on("show scores",(r)=>{
     $('#reset').show("slow");
+    if (r.options.npg){
+        $("#passer").show("slow");
+    }
     r.players.forEach((p)=>{
         afficheScore(true,p);
     });
@@ -177,6 +213,7 @@ socket.on("show scores",(r)=>{
 
 socket.on("unshow scores",(r)=>{
     $('#reset').hide();
+    $("#passer").hide();
     r.players.forEach((p)=>{
         afficheScore(false,p);
     });
@@ -192,6 +229,16 @@ socket.on("update score",(p)=>{
     score.text(p.points);
 });
 
+socket.on("qualifie",(p)=>{
+    $(`#${p.username}`).css('background-color', 'green');
+    lowLag.play('/components/Ding.mp3');
+})
+
+socket.on("unqualifie",(p)=>{
+    $(`#${p.username}`).css('background-color', 'white');
+});
+
+
 socket.on("clear buzz",()=>{
     console.log("clear");
     $('#buzzing-list').empty();
@@ -206,6 +253,10 @@ socket.on("error",(err)=>{
     alert(err);
     document.location.href="/";
 });
+socket.on("alert",(err)=>{
+    alert(err);
+});
+
 
 function liberer(str="only"){
     socket.emit("libere",str);
@@ -226,8 +277,7 @@ function buzzed(){
 }
 
 function soundPlay(){
-    var audio = new Audio('/components/buzzsound.mp3');
-    audio.play();
+    lowLag.play('/components/buzzsound.mp3');
 }
 
 function afficheScore(bool,p){

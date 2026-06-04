@@ -1,0 +1,111 @@
+<%- include('../partials/header',{root:"../../"}); %>
+    <title>FAF - Player</title>
+    </head>
+
+    <body>
+        <%- include('../partials/navbarlow'); %>
+
+            <h1 class="text-center display-4">Game Code: <%= code %>
+            </h1>
+            <div class="row">
+
+                <div class="card col-4 mx-auto" id="user-card">
+                    <div class="card-body">
+                        <form action="" method="post" id="form-pseudo">
+                            <div class="col-xs-4">
+                                <input type="hidden" name="code" id="code" value=<%=code %>>
+                                <label for="username" class="form-label ">Pseudo</label>
+                                <input type="text" pattern="[a-zA-Z0-9]+" name="" id="username" class="form-control" minlength="2"
+                                    maxlength="20" placeholder="Saisir votre pseudo" required>
+                            </div>
+                            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App -->
+
+            <div class="row" id="app-div" style="display: none;">
+
+                <!-- Joueur 1-->
+                <div class="col-4">
+                    <div id="joueur1-div" class="mx-auto text-center pt-5" style="text-align:center;">
+                        <div class="card mx-auto col-8">
+                            <div class="card-header">
+                                <h3 id="joueur1-name">Joueur 1</h3>
+                            </div>
+                            <div class="card-body" id="joueur1-score-div">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-4">
+                    <!-- FAF  -->
+                    <svg height="90%" width="90%" class="m-auto" id="buzzer">
+                        <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow"
+                            id="buzzer-circle" />
+                        <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
+                    </svg>
+                    <svg id="faf-grid" viewBox="50 0 400 400" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com" style="display: none;">
+
+                        <linearGradient id="grad-interieur-1" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="100%" id="grad-interieur-1-orange" style="stop-color: orange; stop-opacity: 1" />
+                            <stop offset="100%" id="grad-interieur-1-blue" style="stop-color: rgb(22, 45, 148);; stop-opacity: 1" />
+                        </linearGradient>
+                        <linearGradient id="grad-interieur-2" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="100%" id="grad-interieur-2-orange" style="stop-color: orange; stop-opacity: 1" />
+                            <stop offset="100%" id="grad-interieur-2-blue" style="stop-color: rgb(22, 45, 148);; stop-opacity: 1" />
+                        </linearGradient>
+                        <linearGradient id="grad-interieur-3" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="100%" id="grad-interieur-3-orange" style="stop-color: orange; stop-opacity: 1" />
+                            <stop offset="100%" id="grad-interieur-3-blue" style="stop-color: rgb(22, 45, 148);; stop-opacity: 1" />
+                        </linearGradient>
+                        <linearGradient id="grad-interieur-4" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="100%" id="grad-interieur-4-orange" style="stop-color: orange; stop-opacity: 1" />
+                            <stop offset="100%" id="grad-interieur-4-blue" style="stop-color: rgb(22, 45, 148);; stop-opacity: 1" />
+                        </linearGradient>
+
+
+                        <path id="exterieur-4" d="M 218.722 43.23 L 254.332 66.432 L 254.332 112.836 L 218.722 136.038 L 183.112 112.836 L 183.112 66.432 Z" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 324.457346, -122.505451)" bx:shape="n-gon 218.722 89.634 41.119 46.404 6 0 1@4c4f4518"/>
+                        <path id="exterieur-3" d="M 218.722 43.23 L 254.332 66.432 L 254.332 112.836 L 218.722 136.038 L 183.112 112.836 L 183.112 66.432 Z" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 325.900431, -47.950544)" bx:shape="n-gon 218.722 89.634 41.119 46.404 6 0 1@4c4f4518"/>
+                        <path id="exterieur-2" d="M 218.722 43.23 L 254.332 66.432 L 254.332 112.836 L 218.722 136.038 L 183.112 112.836 L 183.112 66.432 Z" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 327.700571, 26.306825)" bx:shape="n-gon 218.722 89.634 41.119 46.404 6 0 1@4c4f4518"/>
+                        <path id="exterieur-1" d="M 218.722 43.23 L 254.332 66.432 L 254.332 112.836 L 218.722 136.038 L 183.112 112.836 L 183.112 66.432 Z" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 329.05073, 100.564487)" bx:shape="n-gon 218.722 89.634 41.119 46.404 6 0 1@4c4f4518"/>
+                        <path id="interieur-4" d="M 218.722 49.984 L 249.149 69.809 L 249.149 109.459 L 218.722 129.284 L 188.295 109.459 L 188.295 69.809 Z" style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur-4);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 325.26359, -122.495312)" bx:shape="n-gon 218.722 89.634 35.134 39.65 6 0 1@4640d286"/>
+                        <path id="interieur-3" d="M 218.722 49.984 L 249.149 69.809 L 249.149 109.459 L 218.722 129.284 L 188.295 109.459 L 188.295 69.809 Z" style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur-3);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 326.800516, -48.100683)" bx:shape="n-gon 218.722 89.634 35.134 39.65 6 0 1@4640d286"/>
+                        <path id="interieur-2" d="M 218.722 49.984 L 249.149 69.809 L 249.149 109.459 L 218.722 129.284 L 188.295 109.459 L 188.295 69.809 Z" style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur-2);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 327.700571, 26.606885)" bx:shape="n-gon 218.722 89.634 35.134 39.65 6 0 1@4640d286"/>
+                        <path id="interieur-1" d="M 218.722 49.984 L 249.149 69.809 L 249.149 109.459 L 218.722 129.284 L 188.295 109.459 L 188.295 69.809 Z" style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur-1);" transform="matrix(0.024755, 0.999694, -1.000075, 0.009348, 329.950785, 100.864505)" bx:shape="n-gon 218.722 89.634 35.134 39.65 6 0 1@4640d286"/>
+                        <text id="text-1" style="fill: rgb(134, 134, 134); font-family: Bernard MT; font-size: 18.9px; white-space: pre;" transform="matrix(2.541135, 0, 0, 1.978724, -341.147898, 151.203053)" x="228.173" y="92.334">1</text>
+                        <text id="text-2" style="fill: rgb(134, 134, 134); font-family: Bernard MT; font-size: 18.9px; white-space: pre;" transform="matrix(2.541135, 0, 0, 1.978724, -348.952189, 76.573061)" x="228.173" y="92.334">2</text>
+                        <text id="text-3" style="fill: rgb(134, 134, 134); font-family: Bernard MT; font-size: 18.9px; white-space: pre;" transform="matrix(2.541135, 0, 0, 1.978724, -349.005961, 3.215738)" x="228.173" y="92.334">3</text>
+                        <text id="text-4" style="fill: rgb(134, 134, 134); font-family: Bernard MT; font-size: 18.9px; white-space: pre;" transform="matrix(2.541135, 0, 0, 1.978724, -351.706218, -73.291895)" x="228.173" y="92.334">4</text>
+                    </svg>
+
+                </div>
+
+                <!-- Joueur 2-->
+                <div class="col-4">
+                    <div id="joueur2-div" class="mx-auto text-center pt-5" style="text-align:center;">
+                        <div class="card mx-auto col-8">
+                            <div class="card-header">
+                                <h3 id="joueur2-name">Joueur 2</h3>
+                            </div>
+                            <div class="card-body" id="joueur2-score-div">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="row" id="spec-message" style="display: none;">
+                <h2>Tu es spectateur</h2>
+            </div>
+
+            
+
+            <%- include('../partials/script'); %>
+                <script src="/js/fafplayer.js"></script>
+    </body>

@@ -10,7 +10,7 @@ function adminAuth(req, res, next) {
                 console.log(err.message);
                 res.redirect('login');
             } else {
-                if (decodedToken.role === 'admin') {
+                if (decodedToken.triviarole === 'hote') {
                     next();
                 }
                 else {
@@ -32,7 +32,7 @@ function isAdmin(req, res, next) {
                 console.log(err.message);
                 next(false);
             } else {
-                if (decodedToken.role === 'admin') {
+                if (decodedToken.triviarole === 'hote') {
                     next(true);
                 }
                 else {
@@ -55,8 +55,8 @@ function isConnected(req, res, next) {
                 console.log(err.message);
                 next(false,null);
             } else {
-                if (decodedToken.role) {
-                    next(true, decodedToken.role);
+                if (decodedToken.triviarole) {
+                    next(true, decodedToken.triviarole);
                 }
             }
         });

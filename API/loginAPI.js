@@ -3,7 +3,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../model/user.js';
-import emailValidator from 'deep-email-validator';
+import validator from 'email-validator';
 import { adminAuth, isConnected } from './connectivity.js';
 import cookieParser from 'cookie-parser';
 const saltRounds = 10;
@@ -38,9 +38,9 @@ export default function (io) {
 				error: "Le nom d'utilisateur doit être une chaîne de caractères constituée de lettres !"
 			});
 		}
-		var test = await emailValidator.validate(req.body.email);
-		if (!test.valid) {
-			console.log('Email is not valid');
+		var test = validator.validate(req.body.email);
+		if (!test) {
+			console.log('Email is not valid, error: ' + JSON.stringify(test));
 			return res.json({
 				status: 'error',
 				error: 'Email invalide !'
@@ -62,7 +62,7 @@ export default function (io) {
 				{
 					id: user._id,
 					username: user.username,
-					role: user.role
+					triviarole: user.triviarole
 				},
 				process.env.JWT_SECRET,
 				{
@@ -125,7 +125,7 @@ export default function (io) {
 				{
 					id: user._id,
 					username: user.username,
-					role: user.role
+					triviarole: user.triviarole
 				},
 				process.env.JWT_SECRET,
 				{

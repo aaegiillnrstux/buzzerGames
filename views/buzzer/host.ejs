@@ -18,7 +18,7 @@
                                 <input type="hidden" name="code" id="code" value=<%=code %>>
                                 <label for="username" class="form-label ">Pseudo</label>
                                 <input type="text" name="" id="username" class="form-control" minlength="2"
-                                    maxlength="20" placeholder="Saisir votre pseudo" pattern="[a-zA-Z0-9\s]+" required>
+                                    maxlength="20" placeholder="Saisir votre pseudo" pattern="[a-zA-Z0-9]+" required>
                             </div>
                             <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
                         </form>
@@ -50,6 +50,10 @@
                         <input type="checkbox" class="btn-check" id="btn-points" data-bs-toggle="modal" data-bs-target="#modalPoints">
                         <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalPoints" for="btn-points">Activer points</label><br>
                     </div>
+                    <div class="col-lg-2">
+                        <input type="checkbox" class="btn-check" id="btn-9pg" data-bs-toggle="modal" data-bs-target="#modal9PG">
+                        <label class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal9PG" for="btn-9pg">Activer mode 9PG</label><br>
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="modalPoints" data-bs-backdrop="static" data-bs-keyboard="false"
                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -62,6 +66,25 @@
                                 </div>
                                 <div class="modal-body">
                                     Vous avez activé le comptage de points. Pour valider un buzz, cliquez sur le petit bouton vert à côté d'un joueur qui a buzzé et notez le nombre de points
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai
+                                        compris</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modal9PG" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Attention</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Vous avez activé le mode 9 Points gagnants. Pour valider un buzz, cliquez sur le petit bouton vert à côté d'un joueur qui a buzzé, les points seront mis automatiquement. Vous pourrez toujours régler les erreurs en cliquant sur le score des joueurs.
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai
@@ -106,6 +129,8 @@
                         <button type="button" class="btn btn-success" id="liberer">Libérer (L)</button>
                         <button type="button" class="btn btn-secondary" id="reset" style="display: none;">Reset
                             (R)</button>
+                        <button type="button" class="btn btn-secondary" id="passer" style="display: none;">Passer
+                            </button>
                     </div>
                     <!-- Buzzlist -->
                     <div id="buzzlist-div " class="mx-auto text-center col pt-5" style="text-align:center;">

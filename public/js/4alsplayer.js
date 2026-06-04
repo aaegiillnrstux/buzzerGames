@@ -1,5 +1,5 @@
 // jshint esversion:6
-var player = {
+var myplayer = {
     host: false,
     roomId: null,
     username: "",
@@ -9,24 +9,33 @@ var player = {
 
 var currentRoom;
 
+var ding = new Audio('/components/Ding.mp3');
+ding.preload = 'auto';
+var start = new Audio('/components/start_of_4als.mp3');
+start.preload = 'auto';
+var timesup = new Audio('/components/times-up.mp3');
+timesup.preload = 'auto';
+var QALS = new Audio('/components/4ALS.mp3');
+QALS.preload = 'auto';
+
 const socket = io();
 
 $("#form-pseudo").on('submit', function (e){
     e.preventDefault();
-    player.username= $('#username').val();
-    player.roomId=parseInt($("#code").val());
-    player.socketId=socket.id;
+    myplayer.username= $('#username').val();
+    myplayer.roomId=parseInt($("#code").val());
+    myplayer.socketId=socket.id;
 
     $("#user-card").hide("slow");
     $("#user-card").empty();
     $('#app-div').show("slow");
     
 
-    socket.emit("4ALSplayerData",player);
+    socket.emit("4ALSplayerData",myplayer);
 });
 
 socket.on("4ALS player init",(room,p)=>{
-    player=p;
+    myplayer=p;
     room.players.forEach((player)=>{
         if (player.host){
             $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} (Host) </li>`);
@@ -43,6 +52,7 @@ socket.on("4ALS remove player",(player)=>{
     console.log(`Bye bye ${player.username}`);
     $(`#${player.username}`).remove();
 });
+
 socket.on("4ALS new player",(player)=>{
     $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} <div class="score"><button type="button" id="${player.username}-score" class="btn btn-success score-point edit">${player.points}</button></div></li>`);
 });
@@ -55,17 +65,15 @@ socket.on("4ALS current player",(r)=>{
     if (currentplayer!=null){
         $(`#${currentplayer}`).css('background-color','white');
     }
-    $(`#${r.state.currentPlayer}`).css('background-color','orange');
+    if (r.state.currentPlayer){
+        $(`#${r.state.currentPlayer}`).css('background-color','orange');
+    }
     currentRoom=r;
-    
-
-}
-);
+});
 
 socket.on("4ALS start",(r)=>{
     currentRoom=r;
-    var audio = new Audio('/components/start_of_4als.mp3');
-    audio.play();
+    start.play();
     for (let i=0;i<5;i++){
         changeCouleurInterieur(i,false);
         changeCouleurExterieur(i,false);
@@ -84,8 +92,7 @@ socket.on("4ALS answer",(bool,state)=>{
                 changeCouleurExterieur(state.maxScore,true);
             }
             if (state.score!=4){
-                var audio = new Audio('/components/Ding.mp3');
-                audio.play();
+                ding.play();
             }
         }
         else{
@@ -103,17 +110,48 @@ socket.on("4ALS end",(r,player)=>{
         for (let i=0;i<5;i++){
             changeCouleurInterieur(i,false);
         }
-        var audio = new Audio('/components/times-up.mp3');
-        audio.play();
+        timesup.play();
     }
     else {
-        var audio = new Audio('/components/4ALS.mp3');
-        audio.play();
+        QALS.play();
 
     }  
     updateScore(r,player);
 })
 
+socket.on("4ALS time",(time)=>{
+    currentRoom.options.time=time;
+});
+
+socket.on("4ALS update score",(player,room)=>{
+    currentRoom=room;
+    $(`#${player.username}-score`).text(player.points);
+});
+
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'hidden' : 'visible';
+  socket.emit('4ALS playerVisibility', {
+    username: player.username,
+    state,           // 'hidden' ou 'visible'
+    at: Date.now()
+  });
+});
+
+window.addEventListener('blur', () => {
+  socket.emit('4ALS playerBlur', {
+    username: player.username,
+    state: 'blur',
+    at: Date.now()
+  });
+});
+
+window.addEventListener('focus', () => {
+  socket.emit('4ALS playerFocus', {
+    username: player.username,
+    state: 'focus',
+    at: Date.now()
+  });
+});
 
 socket.on("disconnect",()=>{
     alert("L'hôte s'est déconnecté");

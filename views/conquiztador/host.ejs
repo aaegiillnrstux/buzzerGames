@@ -1,0 +1,508 @@
+<%- include('../partials/header',{root:"../../"}); %>
+    <title>Bunka - Host</title>
+    <link rel="stylesheet" type="text/css" href="/css/conquiztador.css">
+    </head>
+
+    <body>
+        <%- include('../partials/navbarlow'); %>
+
+            <h1 class="text-center display-4" style="display: none;">Game Code: <%= code %>
+            </h1>
+            
+
+            <!-- Pseudo -->
+            <div class="row">
+
+                <div class="card col-4 mx-auto" id="user-card">
+                    <div class="card-body">
+                        <form action="/" method="post" id="form-pseudo">
+                            <div class="col-xs-4">
+                                <input type="hidden" name="code" id="code" value=<%=code %>>
+                                <label for="username" class="form-label ">Pseudo</label>
+                                <input type="text" name="username" id="username" class="form-control" minlength="2"
+                                    maxlength="20" placeholder="Saisir votre pseudo" pattern="[a-zA-Z0-9]+" required>
+                                <label for="listeQuestions" class="form-label ">Mettez ici la liste des 9 questions de
+                                    la manche 1, sous ce format :
+                                    Thème1€Q1;R1$Q2;R2$Q3;R3€Thème2€Q1;R1$Q2;R2$Q3;R3€Thème3€Q1;R1$Q2;R2$Q3;R3 </label>
+                                <input type="text" class="form-control" name="listeQuestions" id="listeQuestions"
+                                    placeholder="Saisir vos questions" required>
+                                <label for="barLength" class="form-label">Longueur de la barre (score cible de Manche 2)</label>
+                                <input type="number" class="form-control" name="barLength" id="barLength" placeholder="18" value="18" required>
+                                <div class="row">
+                                    <label for="ColorInput1" class="form-label col-4">Couleur Joueur 1</label>
+                                    <input type="color" class="form-control form-control-color col-4" id="ColorInput1" value="#162d94" title="Choose your color">
+                                    <label for="ColorInput2" class="form-label col-4">Couleur Joueur 2</label>
+                                    <input type="color" class="form-control form-control-color col-4" id="ColorInput2" value="#ffa600" title="Choose your color">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="start" type="submit">Rejoindre la partie</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--Options -->
+            <div class="text-center">
+                <button type="button" class="btn btn-secondary btn-lg mx-auto" style="display: none;"
+                    id="settings-button">Options</button>
+            </div>
+            <div class="row text-center border-top border-bottom mx-auto my-2" id="settings" style="display: none;">
+                <h1 class="mx-auto my-2">Options</h1>
+
+                <div class="row mx-auto my-2">
+                    <div class="col-1"><input class="form-check-input" type="checkbox" name="whitelist"
+                            id="conquiz-whitelistCheckbox"></div>
+                    <div class="col-4"><label class="form-check-label " for="conquiz-whitelistCheckbox">
+                            Whitelist (Séparer les noms des joueurs par des points virgules)
+                        </label>
+                    </div>
+                    <div class="col-4"><input type="text" name="whitelist-text" id="conquiz-whitelist"
+                            class="form-control col-4" minlength="0" placeholder="Whitelist"></div>
+                    <div class="col-3"><button type="button" class="btn btn-primary"
+                            id="conquiz-whitelist-button">Valider</button></div>
+                </div>
+            </div>
+
+            <!-- App -->
+
+            <div class="row" id="app-div-manche1" style="display: none;">
+
+                <!-- Joueur 1-->
+                <div class="col-3">
+                    <div class="mx-auto text-center pt-5 joueur1-div" style="text-align:center;">
+                        <div class="card mx-auto col-8">
+                            <div class="card-header">
+                                <h3 class="joueur1-name">Joueur 1</h3>
+                            </div>
+                            <div class="card-body joueur1-score-div">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-6 mx-auto my-auto">
+                    <div class="container">
+                        <div class="row">
+                            <h3 class="col-4 mx-auto text-center theme" id="theme1" style="visibility: hidden;">Thème 1</h3>
+                            <h3 class="col-4 mx-auto text-center theme" id="theme2" style="visibility: hidden;">Thème 2</h3>
+                            <h3 class="col-4 mx-auto text-center theme" id="theme3" style="visibility: hidden;">Thème 3</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 block" id="block-3" data-case="3">3 cases</div>
+                            <div class="col-4 block" id="block-6" data-case="6">3 cases</div>
+                            <div class="col-4 block" id="block-9" data-case="9">3 cases</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 block" id="block-2" data-case="2">2 cases</div>
+                            <div class="col-4 block" id="block-5" data-case="5">2 cases</div>
+                            <div class="col-4 block" id="block-8" data-case="8">2 cases</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 block" id="block-1" data-case="1">1 case</div>
+                            <div class="col-4 block" id="block-4" data-case="4">1 case</div>
+                            <div class="col-4 block" id="block-7" data-case="7">1 case</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Joueur 2-->
+                <div class="col-3">
+                    <div class="mx-auto text-center pt-5 joueur2-div" style="text-align:center;">
+                        <div class="card mx-auto col-8">
+                            <div class="card-header">
+                                <h3 class="joueur2-name">Joueur 2</h3>
+                            </div>
+                            <div class="card-body joueur2-score-div">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Commandes  -->
+                <div class="row">
+                    <div id="buttons" class="mx-auto my-2 text-center border-right col-6"
+                        style=" border-right: 1px solid #ccc;">
+                        <h2>Commandes</h2>
+                        <button type="button" class="btn btn-danger" id="Start-Manche2">Manche 2</button>
+                        <button type="button" class="btn btn-secondary" id="Show-Themes">Themes</button>
+                    </div>
+                    <div class="mx-auto text-center col-6 pt-5 spectateurs-div" style="text-align:center;">
+                        <div class="card mx-auto">
+                            <div class="card-header">
+                                Liste des spectateurs
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group spectateurs-list">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Manche 2 -->
+
+            <div class="row" id="app-div-manche2" style="display: none;">
+
+                <!-- Joueur 1-->
+                <div class="col-3">
+                    <div class="mx-auto text-center pt-5 joueur1-div" style="text-align:center;">
+                        <div class="card mx-auto col-8 joueur1-card">
+                            <div class="card-header">
+                                <h3 class="joueur1-name">Joueur 1</h3>
+                            </div>
+                            <div class="card-body joueur1-score-div">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-6">
+                    <svg height="100%" width="100%" class="m-auto" id="buzzer">
+                        <circle cx="50%" cy="50%" r="5em" stroke="black" stroke-width="3" fill="yellow"
+                            id="buzzer-circle" />
+                        <text x="50%" y="50%" text-anchor="middle" class="fs-1" id="buzzer-state">Bloqué</text>
+                    </svg>
+
+                </div>
+
+                <!-- Joueur 2-->
+                <div class="col-3">
+                    <div class="mx-auto text-center pt-5 joueur2-div" style="text-align:center;">
+                        <div class="card mx-auto col-8 joueur2-card">
+                            <div class="card-header">
+                                <h3 class="joueur2-name">Joueur 2</h3>
+                            </div>
+                            <div class="card-body joueur2-score-div">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row py-2 z" id="turf">
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <svg viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg">
+                        <linearGradient id="grad-interieur" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="30%" id="grad-interieur-orange" style="stop-color: #ffa600; stop-opacity: 1"></stop>
+                            <stop offset="30%" id="grad-interieur-white-2" style="stop-color: rgb(255, 255, 255);; stop-opacity: 1"></stop>
+                            <stop offset="70%" id="grad-interieur-white-1" style="stop-color: rgb(255, 255, 255);; stop-opacity: 1"></stop>
+                            <stop offset="0%" id="grad-interieur-blue" style="stop-color: #162d94;; stop-opacity: 1"></stop>
+                        </linearGradient>
+                        <rect x="0" y="0" width="800" height="40" style="stroke: rgb(0, 0, 0); fill: url(#grad-interieur);"
+                            transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 0)" />
+                            <g id="bar-ticks"></g>
+                    </svg>
+                </div>
+
+                <!-- Commandes  -->
+                <div class="row">
+                    <div id="buttons-manche2" class="mx-auto my-2 text-center border-right col-6"
+                        style=" border-right: 1px solid #ccc;">
+                        <h2>Commandes</h2>
+                        <button type="button" class="btn btn-warning" id="bloquer">Bloquer (B)</button>
+                        <button type="button" class="btn btn-success" id="liberer">Libérer (L)</button>
+                        <button type="button" class="btn btn-danger" id="Start-Manche1">Manche 1</button>
+                        <button type="button" class="btn btn-danger" id="Start-Finale">Finale</button>
+                        <button type="button" class="btn btn-secondary" id="question-suivante">Question Suivante</button>
+                        <button type="button" class="btn btn-secondary" id="reponse-suivante">Réponse Suivante</button>
+                        <button type="button" class="btn btn-secondary" id="show-modal-manche2">Modal</button>
+                        <div id="validate-answer" style="display: none;">
+                            <button type="button" class="btn btn-danger" id="Faux-manche2">Faux (F ou suppr)</button>
+                            <button type="button" class="btn btn-success" id="Vrai-manche2">Vrai (V ou espace)</button>
+                        </div>
+                        <div class="" id="countdown-manche2">
+                            0:00
+                        </div>
+                        <button type="button" class="btn btn-primary" data-stopped="no" id="stop-countdown-manche2">Stop</button>
+                    </div>
+                    <div class="mx-auto text-center col-6 pt-5 spectateurs-div " style="text-align:center;">
+                        <div class="card mx-auto">
+                            <div class="card-header">
+                                Liste des spectateurs
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group spectateurs-list">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Manche Finale -->
+            <div class="container" id="app-div-finale" style="display: none;">
+                <div class="row">
+                    <div class="col">
+                        <div class="case-finale block text-center fs-1" data-case="1" id="finale-1"></div>
+                        <div class="case-finale block text-center fs-1" data-case="2" id="finale-2"></div>
+                        <div class="case-finale block text-center fs-1" data-case="3" id="finale-3"></div>
+                        <div class="case-finale block text-center fs-1" data-case="4" id="finale-4"></div>
+                        <div class="case-finale block text-center fs-1" data-case="5" id="finale-5"></div>
+                    </div>
+                    <div class="col">
+                        <div class="case-finale block text-center fs-1" data-case="6" id="finale-6"></div>
+                        <div class="case-finale block text-center fs-1" data-case="7" id="finale-7"></div>
+                        <div class="case-finale block text-center fs-1" data-case="8" id="finale-8"></div>
+                        <div class="case-finale block text-center fs-1" data-case="9" id="finale-9"></div>
+                        <div class="case-finale block text-center fs-1" data-case="10" id="finale-10"></div>
+                    </div>
+                </div>
+            
+
+                <div class="row">
+                    <div id="buttons-manche-finale" class="mx-auto my-2 text-center border-right col-6"
+                        style=" border-right: 1px solid #ccc;">
+                        <h2>Commandes</h2>
+                        <button type="button" class="btn btn-warning" id="Block-finale">Bloquer</button>
+                        <button type="button" class="btn btn-success" id="Unblock-finale">Lancer</button>
+                        <button type="button" class="btn btn-danger" id="Start-Manche2">Manche 2</button>
+                        <button type="button" class="btn btn-info" id="show-modal-finale">Modal</button>
+                        <div class="" id="countdown-finale">
+                            0:00
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="konami-container" id="app-konami-question" style="display: none;">
+                <div id="konami-number"><div id="konami-number-number">1</div></div>
+                <div id="konami-question">
+                    QUELLE NOURRITURE MIRACULEUSE A ÉTÉ FOURNIE PAR DIEU AUX ISRAÉLITES PENDANT LEUR TRAVERSÉE DU DÉSERT, SELON LA BIBLE ?
+                </div>
+            </div>
+
+            <div class="alert alert-success mt-5" style="display: none;" id="success-alert">
+
+            </div>
+
+
+            
+
+            <!-- Validate points -->
+            <div class="modal fade" id="modalGivePoints" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="pseudo-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title " id="pseudo-modal">Valider la réponse</h5>
+                        </div>
+                        <div class="modal-body">
+                            <label for="score" class="form-label" id="modal-score-label">Donnez des points pour la
+                                réponse :</label>
+                            <input type="number" name="score" id="score-input" class="form-control"
+                                placeholder="Nombre de points" pattern="[0-9\s]+" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="btn-validate"
+                                data-bs-dismiss="modal">Valider</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Modal questions manche 1 -->
+            <div class="modal fade" id="modal-question" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="question-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="question-modal">Voici la question</h2>
+                        </div>
+                        <div class="modal-body">
+                            <h3 id="question-div"></h3>
+                            <h4 id="reponse-div"></h4>
+                        </div>
+                        <div class="modal-footer" id="questions-buttons">
+                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" id="Faux-manche1">Faux
+                                (F ou suppr)</button>
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="Vrai-manche1">Vrai
+                                (V ou espace)</button>
+                                <button type="button" class="btn btn-secondary" id="Suspense-manche1">Suspens</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal prestart manche 2 -->
+            <div class="modal fade" id="modal-manche2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="manche2-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="manche2-modal">Attention ! </h2>
+                        </div>
+                        <div class="modal-body">
+                            <h3>La manche 2 se lancera quand vous cliquerez sur le bouton "Lancer" ci-dessous. N'oubliez pas de:</h3>
+                            <ul>
+                                <li>
+                                    - expliquer les règles.
+                                </li>
+                                <li>
+                                    - s'assurer que tout le monde a bien compris.
+                                </li>
+                                <li>
+                                    - Avoir correctement rempli les options
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer" id="manche2-options">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-check-label" for="conquiz-questions-text">Questions</label>
+                                    <textarea name="conquiz-questions-text" id="conquiz-questions" class="form-control" rows="4" placeholder="Paste your questions here"></textarea>
+                                </div>
+                                <div class="col-2"><label class="form-check-label " for="conquiz-pointmax-text">
+                                        Point max par question
+                                    </label>
+                                </div>
+                                <div class="col-2"><input type="number" name="conquiz-pointmax-text" id="conquiz-pointmax"
+                                        class="form-control col-2" minlength="0" placeholder="Point max" value="6"></div>
+                                <div class="col-2"><label class="form-check-label " for="conquiz-rate-text">
+                                        Nb de seconde pour monter de 1 point ou nb de questions pour monter de 1 point selon le mode choisi
+                                </label>
+                                </div>
+                                <div class="col-2"><input type="number" name="conquiz-rate-text" id="conquiz-rate"
+                                            class="form-control col-2" minlength="0" placeholder="rate" value="60"></div>
+                                <div class="col-3">
+                                    <label for="conquiz-mode-select">Mode d'augmentation des points</label>
+                                    <select id="conquiz-mode-select" class="form-select">
+                                        <option value="time">Par le temps</option>
+                                        <option value="questions">Par le nombre de questions</option>
+                                    </select>
+                                </div>
+                                <div class="col-3"><button type="button" class="btn btn-primary"
+                                        id="conquiz-manche2-button">Lancer</button></div>
+            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal manche 0 -->
+
+            <div class="modal fade" id="modal-manche0" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="manche0-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="manche0-modal">Estimation </h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-4"><label class="form-check-label " for="conquiz-estimation-question">
+                                    Question : 
+                                    </label>
+                                </div>
+                                <div class="col-8"><input type="text" name="conquiz-estimation-question" id="conquiz-estimation-question-input"
+                                    class="form-control col-2" minlength="0" placeholder="Question" required></div>
+                            </div>
+                            <div class="row">
+                                
+                                <div class="col-4"><label class="form-check-label " for="conquiz-estimation-reponse">
+                                    Réponse : 
+                                    </label>
+                                </div>
+                                <div class="col-8"><input type="number" name="conquiz-estimation-reponse" id="conquiz-estimation-reponse-input"
+                                        class="form-control col-2" minlength="0" placeholder="0" required>
+                                </div>
+                                <div class="col-3"><button type="button" class="btn btn-primary"
+                                    id="conquiz-manche0-button">Lancer</button></div>
+                            </div>
+                            
+                        </div> 
+                        <div class="modal-footer row" id="manche0-footer">
+                            <div class="row estimations-answers">
+                                <div class="mx-auto text-center col-6 joueur1-div" style="text-align:center;">
+                                    <div class="card mx-auto joueur1-card">
+                                        <div class="card-header">
+                                            <h3 class="joueur1-name">Joueur 1</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="joueur1-reponse-div">
+
+                                            </div>
+                                            <div id="joueur1-ecart-div">
+                                                
+                                            </div>
+                                            <div id="joueur1-temps-div">
+                                                
+                                            </div>
+                                            <button type="button" class="btn btn-primary" id="valider-reponse1" style="display: none;">Valider</button>
+            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" text-center mx-auto col-6 joueur2-div" style="text-align:center;">
+                                    <div class="card mx-auto joueur2-card">
+                                        <div class="card-header">
+                                            <h3 class="joueur2-name">Joueur 2</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="joueur2-reponse-div">
+
+                                            </div>
+                                            <div id="joueur2-ecart-div">
+                                                
+                                            </div>
+                                            <div id="joueur2-temps-div">
+                                                
+                                            </div>
+                                            <button type="button" class="btn btn-primary" id="valider-reponse2" style="display: none;">Valider</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Manche finale -->
+
+            <div class="modal fade" id="modal-finale" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="finale-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="finale-modal">C'est parti pour la manche finale !!</h2>
+                        </div>
+                        <div class="modal-body">
+                            <div class="">
+                                <label for="listeFinale" class="form-label ">Mettez ici la liste des 10 questions de
+                                    la finale, sous ce format :
+                                    Q1;R1$Q2;R2$...$Q10;R10 </label>
+                                <input type="text" class="form-control" name="listeFinale" id="listeFinale"
+                                    placeholder="Saisir votre finale" required>
+                                <label class="form-check-label" for="conquiz-finale-time">
+                                        Nb de secondes pour la finale </label>
+                                <input type="number" name="conquiz-finale-time" id="conquiz-finale-time"
+                                        class="form-control" minlength="0" placeholder="Point max" value="60" required>
+                                
+                            </div>
+                        </div>
+                        <div class="modal-footer" id="finale-buttons">
+                            <button class="btn btn-secondary" id="finale-visualize" type="submit">Visualiser</button>
+                            <button class="btn btn-primary" id="finale-launch" type="submit">Lancer la finale</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <%- include('../partials/script'); %>
+                <script src="/js/conquiztadorhost.js"></script>
+    </body>

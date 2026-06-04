@@ -13,6 +13,10 @@ var player = {
 
 const socket = io();
 
+lowLag.init();
+lowLag.load('/components/buzzsound.mp3');
+lowLag.load('/components/Ding.mp3');
+
 $("#form-pseudo").on('submit', function (e){
     e.preventDefault();
     player.username= $('#username').val();
@@ -36,6 +40,7 @@ socket.on("player init",(room,p)=>{
         else{
             $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} <div class="score" style="display: none;"><button type="button" id="${player.username}-score" class="btn btn-success score-point edit">${p.points}</button></div></li>`);
         }
+        afficheScore(true,player);
     });
     if (p.free&&!p.locked&&!p.buzzed){
         $("#buzzer-state").text("BUZZ");
@@ -56,6 +61,7 @@ socket.on("remove player",(player)=>{
     console.log(`Bye bye ${player.username}`);
     $(`#${player.username}`).remove();
 });
+
 socket.on("new player",(player,bool)=>{
     $('#player-list').append(`<li class="list-group-item" id="${player.username}" >${player.username} <div class="score" style="display: none;"><button type="button" id="${player.username}-score" class="btn btn-success score-point edit">${player.points}</button></div></li>`);
     afficheScore(bool,player);
@@ -84,6 +90,40 @@ socket.on("update score",(p)=>{
     score.text(p.points);
 });
 
+socket.on("qualifie",(p)=>{
+    $("#buzzer-state").text("Qualifié");
+    $("#buzzer-circle").attr('fill',"blue");
+    $(document).off('keydown');
+    $("#buzzer").off('click');
+    $(`#${p.username}`).css('background-color', 'green');
+    lowLag.play('/components/Ding.mp3');
+})
+
+socket.on("unqualifie",(r)=>{
+    if (p.locked){
+        $("#buzzer-state").text("Bloqué");
+        $("#buzzer-circle").attr('fill',"yellow");
+        $("#buzzer").off('click');
+    }
+    else if (p.free){
+        $("#buzzer-state").text("BUZZ");
+        $("#buzzer-circle").attr('fill',"green");
+        $("#buzzer").on('click',buzzerAction);
+    }
+    else if (p.buzzed){
+        $("#buzzer-state").text("Buzzed");
+        $("#buzzer-circle").attr('fill',"red");
+    }
+    $(document).keydown(function(e){
+        if (e.code === "Space"){
+
+            buzzerAction();
+        }
+    });
+    $(`#${r.username}`).css('background-color', 'white');
+});
+
+
 socket.on("disconnect",()=>{
     alert("L'hôte s'est déconnecté");
     document.location.href="/";
@@ -109,6 +149,32 @@ socket.on("unshow scores",(r)=>{
 socket.on("latencyOut",(start)=>{
     socket.emit("latencyIn",start);
 });
+
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'hidden' : 'visible';
+  socket.emit('playerVisibility', {
+    username: player.username,
+    state,           // 'hidden' ou 'visible'
+    at: Date.now()
+  });
+});
+
+window.addEventListener('blur', () => {
+  socket.emit('playerBlur', {
+    username: player.username,
+    state: 'blur',
+    at: Date.now()
+  });
+});
+
+window.addEventListener('focus', () => {
+  socket.emit('playerFocus', {
+    username: player.username,
+    state: 'focus',
+    at: Date.now()
+  });
+});
+
 
 function liberer(){
     console.log("libere");
@@ -137,14 +203,15 @@ function block(){
 
 function buzzed(){
     socket.emit("buzz");
+    $("#buzzer").off('click');
     $("#buzzer-state").text("Buzzed");
     $("#buzzer-circle").attr('fill',"red");
     $(document).off('keydown');
 }
 
 function buzzerAction(){
-    var audio = new Audio('/components/buzzsound.mp3');
-    audio.play();
+    
+    lowLag.play('/components/buzzsound.mp3');
     buzzed();
 }
 
